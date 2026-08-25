@@ -124,8 +124,11 @@ body{
 .dimtxt{position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:var(--sheet);padding:0 8px;
   font-family:"Chivo Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
 .track{position:absolute;top:9px;left:0;right:0;height:17px;border:1px solid var(--rule);background:#fff}
-.fill{position:absolute;top:0;left:0;height:100%;background:var(--teal);width:0;transition:width .28s ease}
+.fill{position:absolute;top:0;left:0;height:100%;background:var(--teal);width:0;transition:width .28s ease,background .2s ease}
 .fill.done{background:var(--olive)}
+.fill.low{background:var(--red)}
+.minmark{position:absolute;top:-4px;bottom:-4px;width:0;border-left:1px dashed var(--red);pointer-events:none}
+.minmark[hidden]{display:none}
 .ruler{position:relative;height:20px;margin-top:1px}
 .ruler i{position:absolute;top:0;width:1px;height:5px;background:var(--rule)}
 .ruler i.maj{height:9px;background:var(--ink)}
@@ -133,6 +136,7 @@ body{
 .readout{display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px;gap:12px}
 .readout .big{font-family:"Chivo Mono",monospace;font-size:34px;font-weight:600;line-height:1;color:var(--teal)}
 .readout .big.done{color:var(--olive)}
+.readout .big.low{color:var(--red)}
 .readout .big small{font-size:14px;color:var(--ink-soft);font-weight:400}
 .readout .side{text-align:right;font-family:"Chivo Mono",monospace;font-size:12px;color:var(--ink-soft);line-height:1.5}
 .readout .side b{color:var(--red);font-weight:600}
@@ -185,8 +189,32 @@ body{
 .libhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 8px}
 .linkbtn{background:none;border:none;cursor:pointer;font-family:"Chivo Mono",monospace;font-size:11px;
   letter-spacing:.1em;text-transform:uppercase;color:var(--red);text-decoration:underline;padding:2px}
-.food{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dotted var(--rule)}
+.food{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px dotted var(--rule);
+  background:var(--sheet);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .food.on{background:#fff;box-shadow:inset 3px 0 0 var(--teal);padding-left:9px}
+.food.drag{position:relative;z-index:30;background:#fff;border-bottom-color:transparent;
+  box-shadow:0 10px 20px -8px rgba(30,42,44,.55),0 0 0 1px var(--ink);cursor:grabbing}
+.grip{display:flex;flex-direction:column;justify-content:center;gap:2.5px;padding:8px 3px 8px 1px;cursor:grab;touch-action:none}
+.grip i{display:block;width:12px;height:1.5px;background:var(--rule)}
+.food.drag .grip i{background:var(--ink)}
+
+/* ---- stock ---- */
+.stk{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dotted var(--rule)}
+.stk.vacio{background:#fff;box-shadow:inset 3px 0 0 var(--red);padding-left:9px}
+.stk .nm{font-size:14.5px;font-weight:600;line-height:1.25}
+.stk .sub{font-family:"Chivo Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:2px}
+.stk .sub em{font-style:normal;color:var(--teal);font-weight:600}
+.stk .sub strong{color:var(--red);font-weight:600}
+.stkin{display:grid;grid-template-columns:66px 58px;gap:7px;align-items:end}
+.stkin .cap{display:block;font-family:"Chivo Mono",monospace;font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px;text-align:center}
+.stkin input{width:100%;height:34px;text-align:center;font-family:"Chivo Mono",monospace;font-size:15px;
+  border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:0;padding:0;-moz-appearance:textfield}
+.stkin input::-webkit-outer-spin-button,.stkin input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stkin input:focus{outline:2px solid var(--teal);outline-offset:-2px}
+.stkin .tot{height:34px;line-height:32px;text-align:center;font-family:"Chivo Mono",monospace;font-size:16px;
+  font-weight:600;background:var(--vellum);border:1px solid var(--rule)}
+.stkin .tot.cero{color:var(--red)}
 .food .nm{font-size:14.5px;font-weight:600;line-height:1.25}
 .food .sub{font-family:"Chivo Mono",monospace;font-size:11px;color:var(--ink-soft);margin-top:2px}
 .food .sub em{font-style:normal;color:var(--teal);font-weight:600}
@@ -208,6 +236,7 @@ body{
 @media (max-width:520px){
   .grid2{grid-template-columns:1fr}
   .tb-title{font-size:22px}
+  .tab{font-size:10.5px;letter-spacing:.04em;padding:11px 2px;font-variation-settings:"wdth" 82}
   .addrow{grid-template-columns:1fr 1fr;}
   .addrow button{grid-column:1/-1}
 }
@@ -230,14 +259,15 @@ body{
   </div>
 
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-calc" aria-controls="p-calc" aria-selected="true">Cálculo</button>
-    <button class="tab" role="tab" id="tab-diario" aria-controls="p-diario" aria-selected="false">Diario</button>
+    <button class="tab" role="tab" id="tab-calc" aria-controls="p-calc" aria-selected="false">Cálculo</button>
+    <button class="tab" role="tab" id="tab-diario" aria-controls="p-diario" aria-selected="true">Diario</button>
+    <button class="tab" role="tab" id="tab-stock" aria-controls="p-stock" aria-selected="false">Stock</button>
     <button class="tab" role="tab" id="tab-hist" aria-controls="p-hist" aria-selected="false">Historial</button>
   </div>
   </div>
 
   <!-- ============ TAB 1 ============ -->
-  <section class="panel" id="p-calc" role="tabpanel" aria-labelledby="tab-calc">
+  <section class="panel" id="p-calc" role="tabpanel" aria-labelledby="tab-calc" hidden>
     <div class="legend">Datos</div>
     <div class="grid2">
       <div class="field">
@@ -303,7 +333,7 @@ body{
   </section>
 
   <!-- ============ TAB 2 ============ -->
-  <section class="panel" id="p-diario" role="tabpanel" aria-labelledby="tab-diario" hidden>
+  <section class="panel" id="p-diario" role="tabpanel" aria-labelledby="tab-diario">
     <div id="sin-meta" class="empty" hidden>
       Todavía no hay meta cargada. Completá tus datos en la pestaña <strong>Cálculo</strong> y el contador se configura solo.
     </div>
@@ -317,7 +347,7 @@ body{
           <div class="dimline"></div>
           <div class="arrow l"></div><div class="arrow r"></div>
           <div class="dimtxt" id="dimtxt">meta 0 g</div>
-          <div class="track"><div class="fill" id="fill"></div></div>
+          <div class="track"><div class="fill" id="fill"></div><div class="minmark" id="minmark" hidden></div></div>
         </div>
         <div class="ruler" id="ruler"></div>
       </div>
@@ -334,7 +364,8 @@ body{
         <label class="datepick"><span>Día</span><input type="date" id="dia" aria-label="Día al que se asigna la carga"></label>
       </div>
       <div id="lista"></div>
-      <button class="linkbtn" id="reset" style="margin-top:10px">Vaciar este día</button>
+      <p class="hint" style="margin-top:8px">Mantené apretada una fila (o la manija de la izquierda) y arrastrala para cambiar el orden.</p>
+      <button class="linkbtn" id="reset" style="margin-top:6px">Vaciar este día</button>
 
       <div class="legend" style="margin-top:22px">Agregar alimento</div>
       <div class="addrow">
@@ -348,7 +379,22 @@ body{
     </div>
   </section>
 
-  <!-- ============ TAB 3 ============ -->
+  <!-- ============ TAB 3 · STOCK ============ -->
+  <section class="panel" id="p-stock" role="tabpanel" aria-labelledby="tab-stock" hidden>
+    <div id="s-aviso"></div>
+
+    <div class="legend">Stock por alimento</div>
+    <div id="s-lista"></div>
+    <p class="hint">El stock está en porciones, las mismas que cargás en el Diario. Escribí en <strong>Cargar</strong> lo que compraste y se suma al total de al lado; cada porción que sumás en Diario lo descuenta. Para corregir de menos, escribí el número en negativo (por ejemplo −2).</p>
+
+    <dl class="spec" style="margin-top:18px">
+      <div class="spec-row"><dt>Ventana de cálculo</dt><dd id="s-ventana">—</dd></div>
+      <div class="spec-row"><dt>Consumo promedio</dt><dd id="s-prom">—</dd></div>
+    </dl>
+    <p class="hint">La estimación usa el promedio diario de los últimos 14 días con registro (o desde el primer día cargado si hay menos). Alimentos que todavía nunca cargaste no tienen promedio, así que no muestran días.</p>
+  </section>
+
+  <!-- ============ TAB 4 ============ -->
   <section class="panel" id="p-hist" role="tabpanel" aria-labelledby="tab-hist" hidden>
     <div class="legend">Proteína por día</div>
     <div class="chartwrap"><div class="chartinner" id="chartinner">
@@ -389,8 +435,9 @@ body{
 var state = {
   sexo:"m", edad:30, altura:175, peso:85, objetivo:78, ritmo:0.5,
   act:{ pesas:{d:3,m:60}, boxeo:{d:1,m:60}, ciclismo:{d:1,m:90} },
-  meta:{kcal:0, prot:0},
-  logs:{}, metas:{}, legacy:{}, dia:"", custom:[]
+  meta:{kcal:0, prot:0, min:0},
+  logs:{}, metas:{}, legacy:{}, dia:"", custom:[],
+  stock:{}, orden:[]
 };
 
 var MET = { pesas:5, boxeo:9.5, ciclismo:8 };
@@ -440,7 +487,8 @@ function save(){
   guardar("nutri:v3", {
     sexo:state.sexo, edad:state.edad, altura:state.altura, peso:state.peso,
     objetivo:state.objetivo, ritmo:state.ritmo, act:state.act,
-    logs:state.logs, metas:state.metas, legacy:state.legacy, custom:state.custom
+    logs:state.logs, metas:state.metas, legacy:state.legacy, custom:state.custom,
+    stock:state.stock, orden:state.orden
   });
 }
 function load(){
@@ -547,13 +595,26 @@ function render(){
 
   $("aviso").innerHTML = r.aviso ? '<div class="note'+(r.tipo==="ok"?" ok":"")+'">'+r.aviso+'</div>' : "";
 
-  state.meta = {kcal:r.kcal, prot:r.prot};
+  state.meta = {kcal:r.kcal, prot:r.prot, min:Math.min(r.protMin, r.prot)};
   renderDiario();
   save();
 }
 
 /* ---------- diario ---------- */
-function todos(){ return FOODS.concat(state.custom); }
+function todos(){
+  var base = FOODS.concat(state.custom), out = [], puesto = {}, i, j;
+  for(i=0;i<(state.orden||[]).length;i++){
+    for(j=0;j<base.length;j++){
+      if(base[j].id === state.orden[i] && !puesto[base[j].id]){ out.push(base[j]); puesto[base[j].id]=1; }
+    }
+  }
+  for(j=0;j<base.length;j++) if(!puesto[base[j].id]) out.push(base[j]);
+  return out;
+}
+function ajustarStock(id, delta){
+  var v = (state.stock[id]||0) + delta;
+  state.stock[id] = Math.max(0, Math.round(v*10)/10);
+}
 
 function totalesDe(fecha){
   var log = state.logs[fecha]||{}, p=0, k=0, all=todos();
@@ -584,12 +645,16 @@ function renderDiario(){
   if(meta<=0) return;
 
   var t = totales(), pct = Math.min(100,(t.prot/meta)*100), listo = t.prot>=meta;
-  $("dimtxt").textContent = "meta "+meta+" g";
+  var min = state.meta.min||0, bajo = min>0 && t.prot < min;
+  $("dimtxt").textContent = min>0 && min<meta ? "mín "+min+" g · meta "+meta+" g" : "meta "+meta+" g";
   $("fill").style.width = pct+"%";
-  $("fill").className = "fill"+(listo?" done":"");
+  $("fill").className = "fill"+(listo?" done":(bajo?" low":""));
+  var mk = $("minmark");
+  if(min>0 && min<meta){ mk.hidden=false; mk.style.left = ((min/meta)*100)+"%"; } else mk.hidden=true;
   $("prot-big").innerHTML = fmt(t.prot)+'<small> g</small>';
-  $("prot-big").className = "big"+(listo?" done":"");
-  $("prot-falta").textContent = listo ? "Meta cumplida" : "Faltan "+Math.round(meta-t.prot)+" g";
+  $("prot-big").className = "big"+(listo?" done":(bajo?" low":""));
+  $("prot-falta").textContent = listo ? "Meta cumplida"
+    : (bajo ? "Faltan "+Math.round(min-t.prot)+" g para el mínimo" : "Faltan "+Math.round(meta-t.prot)+" g");
   $("kcal-run").textContent = fmt(t.kcal);
   $("kcal-meta").textContent = fmt(state.meta.kcal)+" kcal";
   renderRegla(meta);
@@ -603,11 +668,13 @@ function renderDiario(){
 
   var all = todos(), html="", logDia = state.logs[state.dia]||{};
   for(var i=0;i<all.length;i++){
-    var f=all[i], q=logDia[f.id]||0;
-    html += '<div class="food'+(q>0?" on":"")+'">'
+    var f=all[i], q=logDia[f.id]||0, st=state.stock[f.id]||0;
+    html += '<div class="food'+(q>0?" on":"")+'" data-id="'+f.id+'">'
+      + '<div class="grip" aria-hidden="true"><i></i><i></i><i></i></div>'
       + '<div><div class="nm">'+f.nm+'</div><div class="sub">'+f.por+' · <em>'+f.prot+' g prot</em>'
       + (f.kcal?' · '+f.kcal+' kcal':'')
-      + (q>0?' · <strong>'+Math.round(q*f.prot*10)/10+' g en total</strong>':'')+'</div></div>'
+      + (q>0?' · <strong>'+Math.round(q*f.prot*10)/10+' g en total</strong>':'')
+      + ' · stock '+(st>0? st : '<strong style="color:var(--red)">0</strong>')+'</div></div>'
       + '<div class="stepper">'
       + '<button data-m="-1" data-id="'+f.id+'" aria-label="Quitar una porción de '+f.nm+'">–</button>'
       + '<div class="q'+(q===0?" zero":"")+'">'+q+'</div>'
@@ -615,6 +682,64 @@ function renderDiario(){
       + '</div></div>';
   }
   $("lista").innerHTML = html;
+  renderStock();
+}
+
+/* ---------- stock ---------- */
+/* ventana de cálculo: hasta 14 días, contando desde el primer día con registro */
+function ventanaStock(){
+  var claves=[], k;
+  for(k in state.logs) if(Object.keys(state.logs[k]).length) claves.push(k);
+  if(!claves.length) return 0;
+  claves.sort();
+  var d1 = new Date(claves[0]+"T12:00:00"), d2 = new Date(hoyISO()+"T12:00:00");
+  var n = Math.round((d2-d1)/86400000) + 1;
+  if(n < 1) n = 1;
+  return Math.min(n, 14);
+}
+function promedioStock(){
+  var n = ventanaStock(), prom = {}, id, k;
+  if(!n) return {n:0, prom:prom};
+  var desde = diaISO(-(n-1)), hasta = hoyISO();
+  for(k in state.logs){
+    if(k < desde || k > hasta) continue;
+    for(id in state.logs[k]) prom[id] = (prom[id]||0) + state.logs[k][id];
+  }
+  for(id in prom) prom[id] = prom[id]/n;
+  return {n:n, prom:prom};
+}
+function renderStock(){
+  var all = todos(), c = promedioStock(), html = "", i, ceros = [], sumaProm = 0;
+  for(i=0;i<all.length;i++){
+    var f = all[i], s = state.stock[f.id]||0, pr = c.prom[f.id]||0;
+    var dias = pr>0 ? s/pr : null;
+    sumaProm += pr;
+    if(s<=0) ceros.push(f.nm);
+
+    var sub = f.por + ' · ';
+    sub += pr>0 ? 'gasto <em>'+(Math.round(pr*10)/10).toString().replace(".",",")+'/día</em>' : 'sin consumo registrado';
+    if(dias !== null){
+      var dd = Math.floor(dias);
+      sub += ' · ' + (s<=0 ? '<strong>sin stock</strong>' : (dd<=2 ? '<strong>'+dd+' días</strong>' : dd+' días'));
+    } else if(s<=0){ sub += ' · <strong>sin stock</strong>'; }
+
+    html += '<div class="stk'+(s<=0?" vacio":"")+'">'
+      + '<div><div class="nm">'+f.nm+'</div><div class="sub">'+sub+'</div></div>'
+      + '<div class="stkin">'
+      + '<label><span class="cap">Cargar</span>'
+      + '<input type="number" inputmode="decimal" step="1" placeholder="+" data-id="'+f.id+'" aria-label="Cargar porciones de '+f.nm+'"></label>'
+      + '<div><span class="cap">Stock</span><div class="tot'+(s<=0?" cero":"")+'">'+s+'</div></div>'
+      + '</div></div>';
+  }
+  $("s-lista").innerHTML = html;
+
+  $("s-ventana").innerHTML = c.n ? c.n+'<span class="u">'+(c.n===1?"día":"días")+'</span>' : '—';
+  $("s-prom").innerHTML = c.n ? (Math.round(sumaProm*10)/10).toString().replace(".",",")+'<span class="u">porciones/día</span>' : '—';
+
+  var msg = "";
+  if(ceros.length) msg = '<div class="note">Sin stock: <strong>'+ceros.join(", ")+'</strong>.</div>';
+  else if(!c.n) msg = '<div class="note">Todavía no hay consumo cargado, así que no puedo estimar duración. Cargá algunos días en el Diario y acá aparecen los días de stock que te quedan.</div>';
+  $("s-aviso").innerHTML = msg;
 }
 
 /* ---------- historial ---------- */
@@ -704,10 +829,11 @@ function renderHist(){
 /* ---------- respaldo ---------- */
 function datosActuales(){
   return {
-    app:"ficha-nutricional", version:3, generado:new Date().toISOString(),
+    app:"ficha-nutricional", version:4, generado:new Date().toISOString(),
     sexo:state.sexo, edad:state.edad, altura:state.altura, peso:state.peso,
     objetivo:state.objetivo, ritmo:state.ritmo, act:state.act,
-    logs:state.logs, metas:state.metas, legacy:state.legacy, custom:state.custom
+    logs:state.logs, metas:state.metas, legacy:state.legacy, custom:state.custom,
+    stock:state.stock, orden:state.orden
   };
 }
 function avisoRespaldo(txt){
@@ -739,6 +865,7 @@ $("b-file").addEventListener("change", function(){
     ["sexo","edad","altura","peso","objetivo","ritmo"].forEach(function(k){ if(d[k]!=null) state[k]=d[k]; });
     if(d.act) ACTS.forEach(function(a){ if(d.act[a]) state.act[a]=d.act[a]; });
     state.logs = d.logs||{}; state.metas = d.metas||{}; state.legacy = d.legacy||{}; state.custom = d.custom||[];
+    state.stock = d.stock||{}; state.orden = d.orden||[];
     ["edad","altura","peso","objetivo","ritmo"].forEach(function(k){ $(k).value = state[k]; });
     ACTS.forEach(function(a){ $("a-"+a+"-d").value=state.act[a].d; $("a-"+a+"-m").value=state.act[a].m; });
     var bs=$("sexo").querySelectorAll("button");
@@ -774,17 +901,134 @@ $("lista").addEventListener("click", function(ev){
   var b = ev.target.closest("button"); if(!b) return;
   var d = state.dia;
   if(!state.logs[d]) state.logs[d] = {};
-  var id=b.dataset.id, q=(state.logs[d][id]||0)+(+b.dataset.m);
-  if(q<=0) delete state.logs[d][id]; else state.logs[d][id]=Math.min(q,30);
+  var id = b.dataset.id, antes = state.logs[d][id]||0;
+  var q = Math.max(0, Math.min(30, antes + (+b.dataset.m)));
+  if(q !== antes) ajustarStock(id, antes - q);      /* lo que sumás al diario se resta del stock */
+  if(q<=0) delete state.logs[d][id]; else state.logs[d][id]=q;
   if(!Object.keys(state.logs[d]).length) delete state.logs[d];
   renderDiario(); save();
+});
+
+/* ---------- reordenar arrastrando ---------- */
+(function(){
+  var lista = $("lista"), fila=null, inicioY=0, ultimoY=0, activo=false, espera=null, raf=null;
+
+  function pageY(ev){ return ev.clientY + (window.scrollY||window.pageYOffset||0); }
+
+  function actualizar(){
+    if(!fila || !activo) return;
+    var y = ultimoY + (window.scrollY||window.pageYOffset||0);
+    fila.style.transform = "translateY("+(y-inicioY)+"px)";
+    var r = fila.getBoundingClientRect(), prev = fila.previousElementSibling, next = fila.nextElementSibling;
+    if(prev && prev.classList.contains("food")){
+      var pr = prev.getBoundingClientRect();
+      if(r.top < pr.top + pr.height/2){
+        lista.insertBefore(fila, prev);
+        inicioY -= pr.height;
+        fila.style.transform = "translateY("+(y-inicioY)+"px)";
+        return;
+      }
+    }
+    if(next && next.classList.contains("food")){
+      var nr = next.getBoundingClientRect();
+      if(r.bottom > nr.top + nr.height/2){
+        lista.insertBefore(next, fila);
+        inicioY += nr.height;
+        fila.style.transform = "translateY("+(y-inicioY)+"px)";
+      }
+    }
+  }
+  function bucle(){
+    if(!activo){ raf=null; return; }
+    var m=90, alto=window.innerHeight, v=0;
+    if(ultimoY < m) v = -Math.min(16,(m-ultimoY)/3);
+    else if(ultimoY > alto-m) v = Math.min(16,(ultimoY-(alto-m))/3);
+    if(v){ window.scrollBy(0, v); actualizar(); }
+    raf = requestAnimationFrame(bucle);
+  }
+  function bloquear(ev){ if(activo) ev.preventDefault(); }
+
+  function activar(){
+    espera = null; activo = true;
+    fila.classList.add("drag");
+    try{ if(navigator.vibrate) navigator.vibrate(12); }catch(e){}
+    if(!raf) raf = requestAnimationFrame(bucle);
+  }
+  function limpiar(){
+    if(espera){ clearTimeout(espera); espera=null; }
+    if(raf){ cancelAnimationFrame(raf); raf=null; }
+    if(fila){ fila.classList.remove("drag"); fila.style.transform=""; }
+    fila=null; activo=false;
+    document.removeEventListener("pointermove", mover);
+    document.removeEventListener("pointerup", soltar);
+    document.removeEventListener("pointercancel", soltar);
+    document.removeEventListener("touchmove", bloquear, {passive:false});
+  }
+  function mover(ev){
+    if(!fila) return;
+    if(!activo){
+      if(Math.abs(pageY(ev)-inicioY) > 8) limpiar();
+      return;
+    }
+    ultimoY = ev.clientY;
+    actualizar();
+  }
+  function soltar(){
+    var hubo = activo;
+    if(hubo){
+      var ids=[], rows=lista.querySelectorAll(".food");
+      for(var i=0;i<rows.length;i++) ids.push(rows[i].dataset.id);
+      state.orden = ids;
+    }
+    limpiar();
+    if(hubo){ renderDiario(); save(); }
+  }
+
+  lista.addEventListener("pointerdown", function(ev){
+    if(typeof ev.button === "number" && ev.button !== 0) return;
+    var row = ev.target.closest(".food"); if(!row) return;
+    var enManija = !!ev.target.closest(".grip");
+    if(!enManija && ev.target.closest("button")) return;
+    if(fila) limpiar();
+    fila = row; inicioY = pageY(ev); ultimoY = ev.clientY;
+    document.addEventListener("pointermove", mover);
+    document.addEventListener("pointerup", soltar);
+    document.addEventListener("pointercancel", soltar);
+    document.addEventListener("touchmove", bloquear, {passive:false});
+    if(enManija) activar();
+    else espera = setTimeout(activar, 260);
+  });
+  lista.addEventListener("contextmenu", function(ev){ if(activo||espera) ev.preventDefault(); });
+})();
+
+/* ---------- eventos de stock ---------- */
+function cargarStock(inp){
+  var v = parseFloat(inp.value);
+  inp.value = "";
+  if(!v) return;                       /* vacío, 0 o texto: no hace nada */
+  ajustarStock(inp.dataset.id, v);     /* negativo resta */
+  renderStock(); save();
+}
+$("s-lista").addEventListener("change", function(ev){
+  var i = ev.target.closest("input"); if(!i) return;
+  cargarStock(i);
+});
+$("s-lista").addEventListener("keydown", function(ev){
+  if(ev.key !== "Enter") return;
+  var i = ev.target.closest("input"); if(!i) return;
+  ev.preventDefault(); i.blur();       /* blur dispara change */
 });
 $("dia").addEventListener("change", function(){
   state.dia = this.value || hoyISO();
   this.value = state.dia;
   renderDiario(); save();
 });
-$("reset").addEventListener("click", function(){ delete state.logs[state.dia]; renderDiario(); save(); });
+$("reset").addEventListener("click", function(){
+  var log = state.logs[state.dia];
+  if(log) for(var id in log) ajustarStock(id, log[id]);   /* lo cargado vuelve al stock */
+  delete state.logs[state.dia];
+  renderDiario(); save();
+});
 $("n-add").addEventListener("click", function(){
   var nm=$("n-nom").value.trim(), por=$("n-por").value.trim()||"1 porción",
       pr=parseFloat($("n-prot").value), kc=parseFloat($("n-kcal").value);
@@ -799,12 +1043,14 @@ $("h-borrar").addEventListener("click", function(){
   state.logs = {}; state.metas = {}; state.legacy = {};
   renderDiario(); renderHist(); save();
 });
-var tabs=[$("tab-calc"),$("tab-diario"),$("tab-hist")], panels=[$("p-calc"),$("p-diario"),$("p-hist")];
-tabs.forEach(function(t,i){
-  t.addEventListener("click", function(){
-    tabs.forEach(function(x,j){ x.setAttribute("aria-selected", i===j?"true":"false"); panels[j].hidden = i!==j; });
-  });
-});
+var tabs=[$("tab-calc"),$("tab-diario"),$("tab-stock"),$("tab-hist")],
+    panels=[$("p-calc"),$("p-diario"),$("p-stock"),$("p-hist")];
+function irA(i){
+  tabs.forEach(function(x,j){ x.setAttribute("aria-selected", i===j?"true":"false"); panels[j].hidden = i!==j; });
+  if(i===2) renderStock();
+  if(i===3) renderHist();
+}
+tabs.forEach(function(t,i){ t.addEventListener("click", function(){ irA(i); }); });
 
 /* ---------- init ---------- */
 $("hoy").textContent = new Date().toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"2-digit"});
@@ -819,12 +1065,15 @@ load().then(function(d){
     state.logs = d.logs||{};
     state.metas = d.metas||{};
     state.legacy = d.legacy||{};
+    state.stock = d.stock||{};
+    state.orden = d.orden||[];
     ["edad","altura","peso","objetivo","ritmo"].forEach(function(k){ $(k).value = state[k]; });
     ACTS.forEach(function(a){ $("a-"+a+"-d").value=state.act[a].d; $("a-"+a+"-m").value=state.act[a].m; });
     var bs=$("sexo").querySelectorAll("button");
     for(var i=0;i<bs.length;i++) bs[i].setAttribute("aria-pressed", bs[i].dataset.v===state.sexo?"true":"false");
   }
   render();
+  irA(1);            /* la app abre siempre en el Diario */
 });
 
 /* funciona sin conexión una vez instalada en el teléfono */
