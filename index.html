@@ -189,7 +189,7 @@ body{
 .libhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 8px}
 .linkbtn{background:none;border:none;cursor:pointer;font-family:"Chivo Mono",monospace;font-size:11px;
   letter-spacing:.1em;text-transform:uppercase;color:var(--red);text-decoration:underline;padding:2px}
-.food{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px dotted var(--rule);
+.food{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px dotted var(--rule);
   background:var(--sheet);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .food.on{background:#fff;box-shadow:inset 3px 0 0 var(--teal);padding-left:9px}
 .food.drag{position:relative;z-index:30;background:#fff;border-bottom-color:transparent;
@@ -197,6 +197,41 @@ body{
 .grip{display:flex;flex-direction:column;justify-content:center;gap:2.5px;padding:8px 3px 8px 1px;cursor:grab;touch-action:none}
 .grip i{display:block;width:12px;height:1.5px;background:var(--rule)}
 .food.drag .grip i{background:var(--ink)}
+.editbtn{width:30px;height:32px;background:none;border:none;cursor:pointer;color:var(--ink-soft);
+  font-size:15px;line-height:1;padding:0}
+.editbtn:active{color:var(--ink)}
+.editbtn:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+.food.editing{display:block;background:#fff;box-shadow:inset 3px 0 0 var(--ink);padding:10px 9px;
+  -webkit-user-select:auto;user-select:auto}
+.edcap{font-family:"Chivo Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-soft);margin-bottom:7px}
+.edrow{display:grid;gap:6px}
+.edrow input{font-family:"Chivo Mono",monospace;font-size:14px;padding:7px 8px;border:1px solid var(--rule);
+  background:#fff;color:var(--ink);width:100%;border-radius:0;-moz-appearance:textfield}
+.edrow input::-webkit-outer-spin-button,.edrow input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.edrow input:focus{outline:2px solid var(--teal);outline-offset:-1px}
+.ed3{display:grid;grid-template-columns:1fr 72px 72px;gap:6px}
+.edbtns{display:flex;align-items:center;gap:8px;margin-top:3px}
+.edbtns button{padding:8px 12px;background:var(--ink);color:var(--sheet);border:1px solid var(--ink);cursor:pointer;
+  font-family:"Chivo Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.edbtns button.ghost{background:#fff;color:var(--ink)}
+.edbtns button.del{margin-left:auto;background:none;border:none;color:var(--red);text-decoration:underline;padding:2px}
+.food.borrando{display:block;background:#fff;box-shadow:inset 3px 0 0 var(--red);padding:10px 9px;
+  -webkit-user-select:auto;user-select:auto}
+.food.borrando .q1{font-size:14px;font-weight:600;line-height:1.3}
+.food.borrando .q2{font-family:"Chivo Mono",monospace;font-size:11.5px;color:var(--ink-soft);margin:4px 0 9px;line-height:1.5}
+.delbtns{display:grid;gap:6px}
+.delbtns button{padding:9px 11px;background:#fff;border:1px solid var(--ink);color:var(--ink);cursor:pointer;
+  font-family:"Chivo Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-align:left}
+.delbtns button.danger{border-color:var(--red);color:var(--red)}
+.delbtns button.plain{border:none;text-decoration:underline;padding:4px 2px;justify-self:start}
+.extranote{margin-top:9px;padding:8px 10px;background:#fff;border-left:3px solid var(--rule);
+  font-family:"Chivo Mono",monospace;font-size:11px;color:var(--ink-soft);line-height:1.5}
+.extranote .linkbtn{margin-left:6px}
+.hidbox{margin-top:12px;padding:9px 11px;background:#fff;border-left:3px solid var(--rule)}
+.hidbox .cap{display:block;font-family:"Chivo Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px}
+.hidbox .hid{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0;font-size:13.5px}
 
 /* ---- stock ---- */
 .stk{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dotted var(--rule)}
@@ -364,6 +399,7 @@ body{
         <label class="datepick"><span>Día</span><input type="date" id="dia" aria-label="Día al que se asigna la carga"></label>
       </div>
       <div id="lista"></div>
+      <div id="extra-dia"></div>
       <p class="hint" style="margin-top:8px">Mantené apretada una fila (o la manija de la izquierda) y arrastrala para cambiar el orden.</p>
       <button class="linkbtn" id="reset" style="margin-top:6px">Vaciar este día</button>
 
@@ -375,6 +411,7 @@ body{
         <input id="n-kcal" type="number" inputmode="numeric" placeholder="kcal" aria-label="Calorías, opcional">
         <button id="n-add">Agregar</button>
       </div>
+      <div id="ocultos"></div>
       <p class="hint">Las calorías son opcionales: si las dejás vacías el alimento suma proteína igual y no toca el contador de kcal. Los valores de la biblioteca son promedios de tabla por porción; las marcas varían, mirá siempre la etiqueta.</p>
     </div>
   </section>
@@ -437,7 +474,8 @@ var state = {
   act:{ pesas:{d:3,m:60}, boxeo:{d:1,m:60}, ciclismo:{d:1,m:90} },
   meta:{kcal:0, prot:0, min:0},
   logs:{}, metas:{}, legacy:{}, dia:"", custom:[],
-  stock:{}, orden:[]
+  stock:{}, orden:[], edits:{}, extra:{}, ocultos:{},
+  editando:null, borrando:null
 };
 
 var MET = { pesas:5, boxeo:9.5, ciclismo:8 };
@@ -452,6 +490,8 @@ var FOODS = [
 ];
 
 var $ = function(id){ return document.getElementById(id); };
+var esc = function(t){ return String(t==null?"":t)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); };
 var fmt = function(n){ return new Intl.NumberFormat("es-AR").format(n); };
 var hoyISO = function(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
 
@@ -488,7 +528,8 @@ function save(){
     sexo:state.sexo, edad:state.edad, altura:state.altura, peso:state.peso,
     objetivo:state.objetivo, ritmo:state.ritmo, act:state.act,
     logs:state.logs, metas:state.metas, legacy:state.legacy, custom:state.custom,
-    stock:state.stock, orden:state.orden
+    stock:state.stock, orden:state.orden, edits:state.edits,
+    extra:state.extra, ocultos:state.ocultos
   });
 }
 function load(){
@@ -601,8 +642,33 @@ function render(){
 }
 
 /* ---------- diario ---------- */
-function todos(){
-  var base = FOODS.concat(state.custom), out = [], puesto = {}, i, j;
+/* las ediciones de los alimentos de la biblioteca se guardan aparte,
+   así se pueden restaurar; los alimentos propios se editan en su lugar */
+function conEdicion(f){
+  var e = state.edits[f.id];
+  if(!e) return f;
+  return { id:f.id,
+           nm:   e.nm   != null ? e.nm   : f.nm,
+           por:  e.por  != null ? e.por  : f.por,
+           prot: e.prot != null ? e.prot : f.prot,
+           kcal: e.kcal != null ? e.kcal : f.kcal };
+}
+function esPropio(id){
+  for(var i=0;i<state.custom.length;i++) if(state.custom[i].id===id) return true;
+  return false;
+}
+function buscarAlimento(id){
+  var all = catalogo();
+  for(var i=0;i<all.length;i++) if(all[i].id===id) return all[i];
+  return null;
+}
+/* catalogo() = todos los alimentos, incluidos los ocultos: es lo que usa el
+   historial, así que ocultar uno no le mueve ni un gramo a los días viejos.
+   todos() = solo los visibles, que es lo que se dibuja en Diario y Stock. */
+function catalogo(){
+  var lib = [], b;
+  for(b=0;b<FOODS.length;b++) lib.push(conEdicion(FOODS[b]));
+  var base = lib.concat(state.custom), out = [], puesto = {}, i, j;
   for(i=0;i<(state.orden||[]).length;i++){
     for(j=0;j<base.length;j++){
       if(base[j].id === state.orden[i] && !puesto[base[j].id]){ out.push(base[j]); puesto[base[j].id]=1; }
@@ -611,17 +677,24 @@ function todos(){
   for(j=0;j<base.length;j++) if(!puesto[base[j].id]) out.push(base[j]);
   return out;
 }
+function todos(){
+  var all = catalogo(), out = [], i;
+  for(i=0;i<all.length;i++) if(!state.ocultos[all[i].id]) out.push(all[i]);
+  return out;
+}
 function ajustarStock(id, delta){
   var v = (state.stock[id]||0) + delta;
   state.stock[id] = Math.max(0, Math.round(v*10)/10);
 }
 
 function totalesDe(fecha){
-  var log = state.logs[fecha]||{}, p=0, k=0, all=todos();
+  var log = state.logs[fecha]||{}, p=0, k=0, all=catalogo();
   for(var i=0;i<all.length;i++){
     var q = log[all[i].id]||0;
     p += q*all[i].prot; k += q*(all[i].kcal||0);
   }
+  var ex = state.extra[fecha];               /* lo que quedó de alimentos borrados */
+  if(ex){ p += ex.p||0; k += ex.k||0; }
   return {prot:Math.round(p), kcal:Math.round(k)};
 }
 function totales(){ return totalesDe(state.dia); }
@@ -669,20 +742,186 @@ function renderDiario(){
   var all = todos(), html="", logDia = state.logs[state.dia]||{};
   for(var i=0;i<all.length;i++){
     var f=all[i], q=logDia[f.id]||0, st=state.stock[f.id]||0;
+    if(state.borrando === f.id){ html += filaBorrado(f); continue; }
+    if(state.editando === f.id){ html += filaEditor(f); continue; }
     html += '<div class="food'+(q>0?" on":"")+'" data-id="'+f.id+'">'
       + '<div class="grip" aria-hidden="true"><i></i><i></i><i></i></div>'
-      + '<div><div class="nm">'+f.nm+'</div><div class="sub">'+f.por+' · <em>'+f.prot+' g prot</em>'
+      + '<div><div class="nm">'+esc(f.nm)+'</div><div class="sub">'+esc(f.por)+' · <em>'+f.prot+' g prot</em>'
       + (f.kcal?' · '+f.kcal+' kcal':'')
       + (q>0?' · <strong>'+Math.round(q*f.prot*10)/10+' g en total</strong>':'')
       + ' · stock '+(st>0? st : '<strong style="color:var(--red)">0</strong>')+'</div></div>'
+      + '<button class="editbtn" data-act="edit" data-id="'+f.id+'" aria-label="Editar '+esc(f.nm)+'">\u270E</button>'
       + '<div class="stepper">'
-      + '<button data-m="-1" data-id="'+f.id+'" aria-label="Quitar una porción de '+f.nm+'">–</button>'
+      + '<button data-m="-1" data-id="'+f.id+'" aria-label="Quitar una porción de '+esc(f.nm)+'">–</button>'
       + '<div class="q'+(q===0?" zero":"")+'">'+q+'</div>'
-      + '<button data-m="1" data-id="'+f.id+'" aria-label="Sumar una porción de '+f.nm+'">+</button>'
+      + '<button data-m="1" data-id="'+f.id+'" aria-label="Sumar una porción de '+esc(f.nm)+'">+</button>'
       + '</div></div>';
   }
   $("lista").innerHTML = html;
+  renderExtraDia();
+  renderOcultos();
   renderStock();
+}
+
+/* ---------- remanente de alimentos borrados ---------- */
+function renderExtraDia(){
+  var ex = state.extra[state.dia], html = "";
+  if(ex && (ex.p || ex.k)){
+    html += '<div class="extranote">Este día incluye '
+      + (Math.round(ex.p*10)/10) + ' g de proteína'
+      + (ex.k ? ' y '+fmt(Math.round(ex.k))+' kcal' : '')
+      + ' de alimentos que borraste.'
+      + '<button class="linkbtn" data-act="quitar-extra">Quitar</button></div>';
+  }
+  /* alimentos ocultos que igual están cargados en este día: se siguen sumando */
+  var all = catalogo(), log = state.logs[state.dia]||{}, nombres = [], po = 0, i;
+  for(i=0;i<all.length;i++){
+    if(!state.ocultos[all[i].id]) continue;
+    var q = log[all[i].id]||0;
+    if(!q) continue;
+    nombres.push(esc(all[i].nm)+' ×'+q);
+    po += q*all[i].prot;
+  }
+  if(nombres.length){
+    html += '<div class="extranote">Oculto pero cargado en este día: '+nombres.join(', ')
+         +  ' · '+(Math.round(po*10)/10)+' g. Sigue contando.</div>';
+  }
+  $("extra-dia").innerHTML = html;
+}
+$("extra-dia").addEventListener("click", function(ev){
+  var b = ev.target.closest("button");
+  if(!b || b.dataset.act !== "quitar-extra") return;
+  delete state.extra[state.dia];
+  renderDiario(); renderHist(); save();
+});
+
+/* ---------- alimentos ocultos ---------- */
+function renderOcultos(){
+  var ids = Object.keys(state.ocultos), html = "", i, f, hay = 0;
+  for(i=0;i<ids.length;i++){
+    f = buscarAlimento(ids[i]);
+    if(!f){ delete state.ocultos[ids[i]]; continue; }   /* quedó de un borrado viejo */
+    hay++;
+    html += '<div class="hid"><span>'+esc(f.nm)+'</span>'
+         +  '<button class="linkbtn" data-act="show" data-id="'+f.id+'">Mostrar</button></div>';
+  }
+  $("ocultos").innerHTML = hay
+    ? '<div class="hidbox"><span class="cap">Ocultos</span>'+html+'</div>' : "";
+}
+$("ocultos").addEventListener("click", function(ev){
+  var b = ev.target.closest("button"); if(!b) return;
+  delete state.ocultos[b.dataset.id];
+  renderDiario(); save();
+});
+
+/* ---------- editar un alimento ---------- */
+/* El historial no guarda gramos: guarda cuántas porciones comiste cada día.
+   Los gramos se recalculan con estos valores, así que al corregir un alimento
+   se corrigen solos todos los días donde aparece. */
+function filaEditor(f){
+  var propio = esPropio(f.id), editado = !!state.edits[f.id];
+  var extra = propio
+    ? '<button class="del" data-act="del" data-id="'+f.id+'">Borrar</button>'
+    : '<button class="del" data-act="hide" data-id="'+f.id+'">Ocultar</button>';
+  if(!propio && editado)
+    extra = '<button class="ghost" data-act="reset" data-id="'+f.id+'">Restaurar</button>' + extra;
+  return '<div class="food editing" data-id="'+f.id+'">'
+    + '<div class="edcap">Editando · se recalcula todo el historial</div>'
+    + '<div class="edrow">'
+    + '<input data-e="nm" value="'+esc(f.nm)+'" placeholder="Nombre" aria-label="Nombre del alimento">'
+    + '<div class="ed3">'
+    + '<input data-e="por" value="'+esc(f.por)+'" placeholder="Porción" aria-label="Porción">'
+    + '<input data-e="prot" type="number" inputmode="decimal" step="0.1" value="'+f.prot+'" placeholder="g prot" aria-label="Gramos de proteína">'
+    + '<input data-e="kcal" type="number" inputmode="numeric" value="'+(f.kcal||"")+'" placeholder="kcal" aria-label="Calorías, opcional">'
+    + '</div>'
+    + '<div class="edbtns">'
+    + '<button data-act="save" data-id="'+f.id+'">Guardar</button>'
+    + '<button class="ghost" data-act="cancel">Cancelar</button>'
+    + extra
+    + '</div></div></div>';
+}
+function abrirEditor(id){
+  state.editando = id;
+  renderDiario();
+  var i = $("lista").querySelector('.food.editing input');
+  if(i){ i.focus(); if(i.select) i.select(); }
+}
+function guardarEdicion(id){
+  var row = $("lista").querySelector('.food.editing[data-id="'+id+'"]');
+  if(!row) return;
+  var val = function(k){ var i = row.querySelector('[data-e="'+k+'"]'); return i ? i.value : ""; };
+  var nm = val("nm").trim(), por = val("por").trim() || "1 porción";
+  var pr = parseFloat(val("prot")), kc = parseFloat(val("kcal"));
+  if(!nm || !(pr>0)){
+    var mal = row.querySelector('[data-e="'+(!nm ? "nm" : "prot")+'"]');
+    if(mal){ mal.focus(); if(mal.select) mal.select(); }
+    return;
+  }
+  var datos = { nm:nm, por:por, prot:Math.round(pr*10)/10, kcal: kc>0 ? Math.round(kc) : 0 };
+  var enCustom = false, i;
+  for(i=0;i<state.custom.length;i++){
+    if(state.custom[i].id === id){
+      state.custom[i].nm=datos.nm; state.custom[i].por=datos.por;
+      state.custom[i].prot=datos.prot; state.custom[i].kcal=datos.kcal;
+      enCustom = true;
+    }
+  }
+  if(!enCustom) state.edits[id] = datos;
+  state.editando = null;
+  renderDiario(); save();
+}
+function usoEnHistorial(id){
+  var claves = Object.keys(state.logs), dias = 0, porc = 0, i, q;
+  for(i=0;i<claves.length;i++){
+    q = state.logs[claves[i]][id];
+    if(q){ dias++; porc += q; }
+  }
+  return {dias:dias, porc:Math.round(porc*10)/10};
+}
+function filaBorrado(f){
+  var u = usoEnHistorial(f.id), det, botones;
+  if(u.dias){
+    det = 'Lo cargaste en '+u.dias+(u.dias===1?' día':' días')+' · '+u.porc
+        + (u.porc===1?' porción':' porciones')+' · '+(Math.round(u.porc*f.prot*10)/10)+' g de proteína.';
+    botones = '<button data-act="del-ok" data-keep="1" data-id="'+f.id+'">Borrar y dejar el historial como está</button>'
+            + '<button class="danger" data-act="del-ok" data-keep="0" data-id="'+f.id+'">Borrar y restarlo del historial</button>';
+  } else {
+    det = 'No está cargado en ningún día, así que el historial no cambia.';
+    botones = '<button class="danger" data-act="del-ok" data-keep="0" data-id="'+f.id+'">Borrar</button>';
+  }
+  return '<div class="food borrando" data-id="'+f.id+'">'
+    + '<div class="q1">Borrar “'+esc(f.nm)+'”</div>'
+    + '<div class="q2">'+det+'</div>'
+    + '<div class="delbtns">'+botones
+    + '<button class="plain" data-act="del-no">Cancelar</button>'
+    + '</div></div>';
+}
+function borrarAlimento(id, conservar){
+  var f = buscarAlimento(id), claves = Object.keys(state.logs), i, k, q;
+  for(i=0;i<claves.length;i++){
+    k = claves[i];
+    q = state.logs[k] ? state.logs[k][id] : null;
+    if(q == null) continue;
+    if(conservar && f){                       /* la proteína ya comida queda anotada en el día */
+      if(!state.extra[k]) state.extra[k] = {p:0, k:0};
+      state.extra[k].p = Math.round((state.extra[k].p + q*f.prot)*10)/10;
+      state.extra[k].k = Math.round(state.extra[k].k + q*(f.kcal||0));
+    }
+    delete state.logs[k][id];
+    if(!Object.keys(state.logs[k]).length){
+      delete state.logs[k];
+      if(!state.extra[k]) delete state.metas[k];
+    }
+  }
+  for(i=state.custom.length-1;i>=0;i--) if(state.custom[i].id===id) state.custom.splice(i,1);
+  delete state.edits[id];
+  delete state.stock[id];
+  delete state.ocultos[id];
+  var orden = [];
+  for(i=0;i<(state.orden||[]).length;i++) if(state.orden[i]!==id) orden.push(state.orden[i]);
+  state.orden = orden;
+  state.editando = null; state.borrando = null;
+  renderDiario(); renderHist(); save();
 }
 
 /* ---------- stock ---------- */
@@ -716,7 +955,7 @@ function renderStock(){
     sumaProm += pr;
     if(s<=0) ceros.push(f.nm);
 
-    var sub = f.por + ' · ';
+    var sub = esc(f.por) + ' · ';
     sub += pr>0 ? 'gasto <em>'+(Math.round(pr*10)/10).toString().replace(".",",")+'/día</em>' : 'sin consumo registrado';
     if(dias !== null){
       var dd = Math.floor(dias);
@@ -724,10 +963,10 @@ function renderStock(){
     } else if(s<=0){ sub += ' · <strong>sin stock</strong>'; }
 
     html += '<div class="stk'+(s<=0?" vacio":"")+'">'
-      + '<div><div class="nm">'+f.nm+'</div><div class="sub">'+sub+'</div></div>'
+      + '<div><div class="nm">'+esc(f.nm)+'</div><div class="sub">'+sub+'</div></div>'
       + '<div class="stkin">'
       + '<label><span class="cap">Cargar</span>'
-      + '<input type="number" inputmode="decimal" step="1" placeholder="+" data-id="'+f.id+'" aria-label="Cargar porciones de '+f.nm+'"></label>'
+      + '<input type="number" inputmode="decimal" step="1" placeholder="+" data-id="'+f.id+'" aria-label="Cargar porciones de '+esc(f.nm)+'"></label>'
       + '<div><span class="cap">Stock</span><div class="tot'+(s<=0?" cero":"")+'">'+s+'</div></div>'
       + '</div></div>';
   }
@@ -753,9 +992,11 @@ function lindaFecha(iso){
 }
 
 function entradas(){
-  var out = {}, k;
+  var out = {}, dias = {}, k;
   for(k in state.legacy) out[k] = state.legacy[k];
-  for(k in state.logs){
+  for(k in state.logs) dias[k] = 1;
+  for(k in state.extra) dias[k] = 1;
+  for(k in dias){
     var t = totalesDe(k);
     if(t.prot > 0) out[k] = {p:t.prot, k:t.kcal, m:state.metas[k] || state.meta.prot || 0};
   }
@@ -829,11 +1070,12 @@ function renderHist(){
 /* ---------- respaldo ---------- */
 function datosActuales(){
   return {
-    app:"ficha-nutricional", version:4, generado:new Date().toISOString(),
+    app:"ficha-nutricional", version:6, generado:new Date().toISOString(),
     sexo:state.sexo, edad:state.edad, altura:state.altura, peso:state.peso,
     objetivo:state.objetivo, ritmo:state.ritmo, act:state.act,
     logs:state.logs, metas:state.metas, legacy:state.legacy, custom:state.custom,
-    stock:state.stock, orden:state.orden
+    stock:state.stock, orden:state.orden, edits:state.edits,
+    extra:state.extra, ocultos:state.ocultos
   };
 }
 function avisoRespaldo(txt){
@@ -865,7 +1107,9 @@ $("b-file").addEventListener("change", function(){
     ["sexo","edad","altura","peso","objetivo","ritmo"].forEach(function(k){ if(d[k]!=null) state[k]=d[k]; });
     if(d.act) ACTS.forEach(function(a){ if(d.act[a]) state.act[a]=d.act[a]; });
     state.logs = d.logs||{}; state.metas = d.metas||{}; state.legacy = d.legacy||{}; state.custom = d.custom||[];
-    state.stock = d.stock||{}; state.orden = d.orden||[];
+    state.stock = d.stock||{}; state.orden = d.orden||[]; state.edits = d.edits||{};
+    state.extra = d.extra||{}; state.ocultos = d.ocultos||{};
+    state.editando = null; state.borrando = null;
     ["edad","altura","peso","objetivo","ritmo"].forEach(function(k){ $(k).value = state[k]; });
     ACTS.forEach(function(a){ $("a-"+a+"-d").value=state.act[a].d; $("a-"+a+"-m").value=state.act[a].m; });
     var bs=$("sexo").querySelectorAll("button");
@@ -899,6 +1143,19 @@ $("sexo").addEventListener("click", function(ev){
 });
 $("lista").addEventListener("click", function(ev){
   var b = ev.target.closest("button"); if(!b) return;
+  var act = b.dataset.act;
+  if(act === "edit"){ abrirEditor(b.dataset.id); return; }
+  if(act === "cancel"){ state.editando = null; renderDiario(); return; }
+  if(act === "save"){ guardarEdicion(b.dataset.id); return; }
+  if(act === "del"){ state.editando = null; state.borrando = b.dataset.id; renderDiario(); return; }
+  if(act === "del-no"){ state.borrando = null; renderDiario(); return; }
+  if(act === "del-ok"){ borrarAlimento(b.dataset.id, b.dataset.keep === "1"); return; }
+  if(act === "hide"){
+    state.ocultos[b.dataset.id] = 1; state.editando = null;
+    renderDiario(); renderHist(); save(); return;
+  }
+  if(act === "reset"){ delete state.edits[b.dataset.id]; state.editando = null; renderDiario(); save(); return; }
+  if(act) return;
   var d = state.dia;
   if(!state.logs[d]) state.logs[d] = {};
   var id = b.dataset.id, antes = state.logs[d][id]||0;
@@ -987,6 +1244,7 @@ $("lista").addEventListener("click", function(ev){
   lista.addEventListener("pointerdown", function(ev){
     if(typeof ev.button === "number" && ev.button !== 0) return;
     var row = ev.target.closest(".food"); if(!row) return;
+    if(row.classList.contains("editing") || row.classList.contains("borrando")) return;
     var enManija = !!ev.target.closest(".grip");
     if(!enManija && ev.target.closest("button")) return;
     if(fila) limpiar();
@@ -1019,6 +1277,7 @@ $("s-lista").addEventListener("keydown", function(ev){
   ev.preventDefault(); i.blur();       /* blur dispara change */
 });
 $("dia").addEventListener("change", function(){
+  state.editando = null; state.borrando = null;
   state.dia = this.value || hoyISO();
   this.value = state.dia;
   renderDiario(); save();
@@ -1027,7 +1286,8 @@ $("reset").addEventListener("click", function(){
   var log = state.logs[state.dia];
   if(log) for(var id in log) ajustarStock(id, log[id]);   /* lo cargado vuelve al stock */
   delete state.logs[state.dia];
-  renderDiario(); save();
+  delete state.extra[state.dia];
+  renderDiario(); renderHist(); save();
 });
 $("n-add").addEventListener("click", function(){
   var nm=$("n-nom").value.trim(), por=$("n-por").value.trim()||"1 porción",
@@ -1036,11 +1296,12 @@ $("n-add").addEventListener("click", function(){
   state.custom.push({id:"c"+Date.now(), nm:nm, por:por, prot:Math.round(pr*10)/10,
                      kcal: kc>0 ? Math.round(kc) : 0});
   $("n-nom").value=""; $("n-por").value=""; $("n-prot").value=""; $("n-kcal").value="";
+  state.editando = null; state.borrando = null;
   renderDiario(); save();
 });
 $("h-borrar").addEventListener("click", function(){
   if(!confirm("¿Borrar todos los días guardados? No se puede deshacer.")) return;
-  state.logs = {}; state.metas = {}; state.legacy = {};
+  state.logs = {}; state.metas = {}; state.legacy = {}; state.extra = {};
   renderDiario(); renderHist(); save();
 });
 var tabs=[$("tab-calc"),$("tab-diario"),$("tab-stock"),$("tab-hist")],
@@ -1067,6 +1328,9 @@ load().then(function(d){
     state.legacy = d.legacy||{};
     state.stock = d.stock||{};
     state.orden = d.orden||[];
+    state.edits = d.edits||{};
+    state.extra = d.extra||{};
+    state.ocultos = d.ocultos||{};
     ["edad","altura","peso","objetivo","ritmo"].forEach(function(k){ $(k).value = state[k]; });
     ACTS.forEach(function(a){ $("a-"+a+"-d").value=state.act[a].d; $("a-"+a+"-m").value=state.act[a].m; });
     var bs=$("sexo").querySelectorAll("button");
