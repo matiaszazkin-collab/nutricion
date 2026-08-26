@@ -461,6 +461,7 @@ body{
     <input type="file" id="b-file" accept="application/json,.json" hidden>
     <div id="b-msg"></div>
     <p class="hint">El respaldo se baja como un archivo a la carpeta Descargas. Guardalo donde quieras: contiene tus datos, la biblioteca y todos los días cargados. Restaurarlo reemplaza lo que tengas ahora.</p>
+    <p class="foot">Versión 6 · editar, ocultar y borrar alimentos</p>
   </section>
 </div>
 </div>
@@ -1342,7 +1343,16 @@ load().then(function(d){
 
 /* funciona sin conexión una vez instalada en el teléfono */
 if("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
-  navigator.serviceWorker.register("sw.js").catch(function(){});
+  navigator.serviceWorker.register("sw.js").then(function(reg){
+    reg.update();                                   /* busca versión nueva al abrir */
+    setInterval(function(){ reg.update(); }, 3600000);
+  }).catch(function(){});
+  var recargando = false;                           /* cuando entra una versión nueva, recarga sola */
+  navigator.serviceWorker.addEventListener("controllerchange", function(){
+    if(recargando) return;
+    recargando = true;
+    location.reload();
+  });
 }
 </script>
 </body>
