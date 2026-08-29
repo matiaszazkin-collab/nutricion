@@ -44,6 +44,18 @@ body{
 /* ---- cabecera fija ---- */
 .stickyhead{position:sticky;top:0;z-index:20;background:var(--sheet);box-shadow:0 6px 12px -8px rgba(30,42,44,.45)}
 
+/* ---- bloque fijo del Diario (proteína + fila Biblioteca/Día) ---- */
+.diariofijo{position:sticky;top:var(--headh,0px);z-index:15;background:var(--sheet);
+  margin:0 -14px;padding:0 14px 6px;transition:padding .18s ease}
+.diariofijo .libhead{margin:20px 0 0}
+.diariofijo.stuck{padding-top:8px;box-shadow:0 8px 12px -10px rgba(30,42,44,.55)}
+.diariofijo.stuck .gauge{padding-top:22px;margin-bottom:0}
+.diariofijo.stuck .ruler{display:none}
+.diariofijo.stuck .readout{margin-top:7px}
+.diariofijo.stuck .readout .big{font-size:24px}
+.diariofijo.stuck .readout .big small{font-size:12px}
+.diariofijo.stuck .libhead{margin-top:10px}
+
 /* ---- selector de fecha ---- */
 .datepick{display:flex;align-items:center;gap:7px}
 .datepick span{font-family:"Chivo Mono",monospace;font-size:10px;letter-spacing:.16em;
@@ -418,6 +430,7 @@ body{
     </div>
 
     <div id="con-meta">
+      <div class="diariofijo" id="diario-fijo">
       <div class="legend">Proteína del día</div>
       <div id="aviso-dia"></div>
       <div class="gauge">
@@ -441,6 +454,7 @@ body{
       <div class="libhead">
         <div class="legend" style="margin:0;border:none;padding:0">Biblioteca</div>
         <label class="datepick"><span>Día</span><input type="date" id="dia" aria-label="Día al que se asigna la carga"></label>
+      </div>
       </div>
       <div id="lista"></div>
       <div id="extra-dia"></div>
@@ -1935,6 +1949,32 @@ load().then(function(d){
   }
   render();
   irA("diario");     /* la app abre siempre en el Diario */
+
+  /* ---- bloque fijo del Diario: mide la cabecera y compacta al pegarse ---- */
+  var cab = document.querySelector(".stickyhead");
+  var fijo = $("diario-fijo");
+  function medirCab(){
+    if(!cab) return;
+    document.documentElement.style.setProperty("--headh", cab.offsetHeight + "px");
+  }
+  var pend = false;
+  function chkStuck(){
+    pend = false;
+    if(!fijo) return;
+    var tope = parseFloat(getComputedStyle(fijo).top) || 0;
+    fijo.classList.toggle("stuck", fijo.getBoundingClientRect().top <= tope + 0.5);
+  }
+  function alScroll(){
+    if(pend) return;
+    pend = true;
+    requestAnimationFrame(chkStuck);
+  }
+  medirCab();
+  chkStuck();
+  window.addEventListener("scroll", alScroll, {passive:true});
+  window.addEventListener("resize", function(){ medirCab(); alScroll(); });
+  if(window.ResizeObserver && cab) new ResizeObserver(medirCab).observe(cab);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(medirCab);
 });
 
 /* funciona sin conexión una vez instalada en el teléfono */
