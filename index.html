@@ -337,11 +337,11 @@ body{
   </div>
 
   <div class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-calc" aria-controls="p-calc" aria-selected="false">Cálculo</button>
     <button class="tab" role="tab" id="tab-diario" aria-controls="p-diario" aria-selected="true">Diario</button>
+    <button class="tab" role="tab" id="tab-hist" aria-controls="p-hist" aria-selected="false">Historial</button>
     <button class="tab" role="tab" id="tab-stock" aria-controls="p-stock" aria-selected="false">Stock</button>
     <button class="tab" role="tab" id="tab-med" aria-controls="p-med" aria-selected="false">Medidas</button>
-    <button class="tab" role="tab" id="tab-hist" aria-controls="p-hist" aria-selected="false">Historial</button>
+    <button class="tab" role="tab" id="tab-calc" aria-controls="p-calc" aria-selected="false">Cálculo</button>
   </div>
   </div>
 
@@ -1894,13 +1894,16 @@ $("h-borrar").addEventListener("click", function(){
   state.logs = {}; state.metas = {}; state.mins = {}; state.legacy = {}; state.extra = {};
   renderDiario(); renderHist(); save();
 });
-var tabs=[$("tab-calc"),$("tab-diario"),$("tab-stock"),$("tab-med"),$("tab-hist")],
-    panels=[$("p-calc"),$("p-diario"),$("p-stock"),$("p-med"),$("p-hist")];
+/* orden de las pestañas, de izquierda a derecha */
+var ORDEN=["diario","hist","stock","med","calc"],
+    RENDER={hist:renderHist, stock:renderStock, med:renderMed},
+    tabs=ORDEN.map(function(k){ return $("tab-"+k); }),
+    panels=ORDEN.map(function(k){ return $("p-"+k); });
 function irA(i){
+  if(typeof i==="string") i=ORDEN.indexOf(i);
+  if(i<0) i=0;
   tabs.forEach(function(x,j){ x.setAttribute("aria-selected", i===j?"true":"false"); panels[j].hidden = i!==j; });
-  if(i===2) renderStock();
-  if(i===3) renderMed();
-  if(i===4) renderHist();
+  var r=RENDER[ORDEN[i]]; if(r) r();
 }
 tabs.forEach(function(t,i){ t.addEventListener("click", function(){ irA(i); }); });
 
@@ -1931,7 +1934,7 @@ load().then(function(d){
     for(var i=0;i<bs.length;i++) bs[i].setAttribute("aria-pressed", bs[i].dataset.v===state.sexo?"true":"false");
   }
   render();
-  irA(1);            /* la app abre siempre en el Diario */
+  irA("diario");     /* la app abre siempre en el Diario */
 });
 
 /* funciona sin conexión una vez instalada en el teléfono */
