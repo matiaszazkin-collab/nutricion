@@ -165,8 +165,12 @@ body{
 .col .bar.none{background:repeating-linear-gradient(45deg,#E8E6DE 0 3px,#fff 3px 6px);border:1px solid var(--grid)}
 .col .val{position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);
   font-family:"Chivo Mono",monospace;font-size:9px;color:var(--ink-soft)}
-.metaline{position:absolute;left:0;right:0;border-top:1px dashed var(--red);pointer-events:none}
+.col .bar.low{background:var(--red)}
+.metaline{position:absolute;left:0;right:0;border-top:1px dashed var(--olive);pointer-events:none}
 .metaline b{position:absolute;left:0;top:-13px;background:var(--sheet);padding:0 4px;
+  font-family:"Chivo Mono",monospace;font-size:9px;font-weight:400;color:var(--olive);letter-spacing:.08em}
+.minline{position:absolute;left:0;right:0;border-top:1px dashed var(--red);pointer-events:none}
+.minline b{position:absolute;right:0;top:-13px;background:var(--sheet);padding:0 4px;
   font-family:"Chivo Mono",monospace;font-size:9px;font-weight:400;color:var(--red);letter-spacing:.08em}
 .xaxis div.mes{color:var(--ink);font-weight:600}
 .xaxis{display:flex;gap:4px;margin-top:5px}
@@ -177,6 +181,7 @@ body{
 .hrow .d{font-family:"Chivo Mono",monospace;font-size:12px;color:var(--ink-soft)}
 .hrow .p{font-family:"Chivo Mono",monospace;font-size:14px;font-weight:600;color:var(--teal)}
 .hrow .p.done{color:var(--olive)}
+.hrow .p.low{color:var(--red)}
 .hrow .p span{font-weight:400;font-size:11px;color:var(--ink-soft)}
 .btnrow{display:grid;gap:8px;margin-top:12px}
 .btn{padding:12px 14px;background:var(--ink);color:var(--sheet);border:1.5px solid var(--ink);cursor:pointer;
@@ -233,6 +238,43 @@ body{
   text-transform:uppercase;color:var(--ink-soft);margin-bottom:5px}
 .hidbox .hid{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0;font-size:13.5px}
 
+/* ---- medidas ---- */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0 10px}
+.chip{padding:6px 10px;background:#fff;border:1px solid var(--rule);cursor:pointer;
+  font-family:"Chivo Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.chip:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+.lchart{background:#fff;border:1px solid var(--ink);display:block;width:100%;height:auto}
+.lleg{display:flex;flex-wrap:wrap;gap:13px;margin-top:8px;
+  font-family:"Chivo Mono",monospace;font-size:10.5px;color:var(--ink-soft);letter-spacing:.04em}
+.lleg i{display:inline-block;width:17px;height:0;border-top:2px solid var(--teal);vertical-align:middle;margin-right:5px}
+.lleg .plan i{border-top:1.5px dashed var(--ink-soft)}
+.lleg .obj i{border-top:1.5px dashed var(--olive)}
+.medgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px 10px;margin-top:11px}
+.medgrid label{display:flex;flex-direction:column;gap:3px}
+.medgrid label span{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft)}
+.medgrid input{font-family:"Chivo Mono",monospace;font-size:15px;padding:8px 9px;border:1px solid var(--rule);
+  background:#fff;color:var(--ink);width:100%;border-radius:0;-moz-appearance:textfield}
+.medgrid input::-webkit-outer-spin-button,.medgrid input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.medgrid input:focus{outline:2px solid var(--teal);outline-offset:-1px;border-color:var(--teal)}
+.comohacer{margin-top:13px;border-left:3px solid var(--rule);background:#fff}
+.comohacer summary{cursor:pointer;padding:9px 11px;font-family:"Chivo Mono",monospace;font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.comohacer ul{margin:0;padding:0 12px 11px 27px;font-size:13px;line-height:1.5}
+.comohacer li{margin-bottom:6px}
+.comohacer b{font-weight:700}
+.mrow{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:baseline;
+  padding:8px 0;border-bottom:1px dotted var(--rule);font-size:13.5px;cursor:pointer}
+.mrow .d{font-family:"Chivo Mono",monospace;font-size:12px;color:var(--ink-soft)}
+.mrow .v{font-family:"Chivo Mono",monospace;font-size:14px;font-weight:600;color:var(--teal)}
+.mrow .x{font-family:"Chivo Mono",monospace;font-size:11px;color:var(--red);text-decoration:underline;
+  background:none;border:none;cursor:pointer;padding:2px 0 2px 6px}
+.mrow .sub{grid-column:1/-1;font-family:"Chivo Mono",monospace;font-size:10.5px;
+  color:var(--ink-soft);line-height:1.5}
+.mrow.edit{background:#fff;box-shadow:inset 3px 0 0 var(--ink);padding-left:9px}
+.dlt{font-family:"Chivo Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
+.dlt.bien{color:var(--olive)} .dlt.mal{color:var(--red)}
+
 /* ---- stock ---- */
 .stk{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dotted var(--rule)}
 .stk.vacio{background:#fff;box-shadow:inset 3px 0 0 var(--red);padding-left:9px}
@@ -273,6 +315,7 @@ body{
   .tb-title{font-size:22px}
   .tab{font-size:10.5px;letter-spacing:.04em;padding:11px 2px;font-variation-settings:"wdth" 82}
   .addrow{grid-template-columns:1fr 1fr;}
+  .tab{font-size:9.5px;letter-spacing:.02em;padding:11px 1px}
   .addrow button{grid-column:1/-1}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -297,6 +340,7 @@ body{
     <button class="tab" role="tab" id="tab-calc" aria-controls="p-calc" aria-selected="false">Cálculo</button>
     <button class="tab" role="tab" id="tab-diario" aria-controls="p-diario" aria-selected="true">Diario</button>
     <button class="tab" role="tab" id="tab-stock" aria-controls="p-stock" aria-selected="false">Stock</button>
+    <button class="tab" role="tab" id="tab-med" aria-controls="p-med" aria-selected="false">Medidas</button>
     <button class="tab" role="tab" id="tab-hist" aria-controls="p-hist" aria-selected="false">Historial</button>
   </div>
   </div>
@@ -431,7 +475,41 @@ body{
     <p class="hint">La estimación usa el promedio diario de los últimos 14 días con registro (o desde el primer día cargado si hay menos). Alimentos que todavía nunca cargaste no tienen promedio, así que no muestran días.</p>
   </section>
 
-  <!-- ============ TAB 4 ============ -->
+  <!-- ============ TAB 4 · MEDIDAS ============ -->
+  <section class="panel" id="p-med" role="tabpanel" aria-labelledby="tab-med" hidden>
+    <div class="legend">Nuevo registro</div>
+    <div class="grid2">
+      <div class="field"><label for="m-fecha">Fecha</label><input id="m-fecha" type="date"></div>
+      <div class="field"><label for="m-peso">Peso (kg)</label><input id="m-peso" type="number" inputmode="decimal" step="0.1" min="25" max="300" placeholder="—"></div>
+    </div>
+    <div class="medgrid" id="m-campos"></div>
+    <div class="btnrow"><button class="btn" id="m-add">Guardar registro</button></div>
+    <div id="m-msg"></div>
+
+    <details class="comohacer">
+      <summary>Cómo medir para que sirva</summary>
+      <ul id="m-como"></ul>
+    </details>
+
+    <div class="legend" style="margin-top:24px">Evolución</div>
+    <div class="chips" id="m-chips"></div>
+    <div id="m-chart"></div>
+    <div id="m-leyenda"></div>
+
+    <dl class="spec" id="m-spec"></dl>
+
+    <div class="legend" style="margin-top:24px">Composición y forma</div>
+    <div id="m-comp"></div>
+
+    <div class="libhead">
+      <div class="legend" style="margin:0;border:none;padding:0">Registros</div>
+      <button class="linkbtn" id="m-borrar">Borrar todo</button>
+    </div>
+    <div id="m-lista"></div>
+    <p class="hint">Tocá un registro para volver a abrirlo en el formulario y corregirlo. El peso del registro más reciente se copia solo al campo <strong>Peso actual</strong> de Cálculo, así las calorías y la proteína del día se recalculan con tu peso de hoy.</p>
+  </section>
+
+  <!-- ============ TAB 5 ============ -->
   <section class="panel" id="p-hist" role="tabpanel" aria-labelledby="tab-hist" hidden>
     <div class="legend">Proteína por día</div>
     <div class="chartwrap"><div class="chartinner" id="chartinner">
@@ -461,7 +539,7 @@ body{
     <input type="file" id="b-file" accept="application/json,.json" hidden>
     <div id="b-msg"></div>
     <p class="hint">El respaldo se baja como un archivo a la carpeta Descargas. Guardalo donde quieras: contiene tus datos, la biblioteca y todos los días cargados. Restaurarlo reemplaza lo que tengas ahora.</p>
-    <p class="foot">Versión 6 · editar, ocultar y borrar alimentos</p>
+    <p class="foot">Versión 7 · medidas, peso y mínimo en el historial</p>
   </section>
 </div>
 </div>
@@ -474,10 +552,25 @@ var state = {
   sexo:"m", edad:30, altura:175, peso:85, objetivo:78, ritmo:0.5,
   act:{ pesas:{d:3,m:60}, boxeo:{d:1,m:60}, ciclismo:{d:1,m:90} },
   meta:{kcal:0, prot:0, min:0},
-  logs:{}, metas:{}, legacy:{}, dia:"", custom:[],
+  logs:{}, metas:{}, mins:{}, legacy:{}, dia:"", custom:[],
   stock:{}, orden:[], edits:{}, extra:{}, ocultos:{},
+  med:{}, medSel:"peso",
   editando:null, borrando:null
 };
+
+/* Medidas de seguimiento. Cuello + cintura (+ cadera en mujeres) son las que
+   entran en la fórmula de grasa corporal de la Marina de EE.UU.; el resto son
+   para ver cómo cambia la forma cuando la balanza no se mueve. */
+var MEDIDAS = [
+  {id:"cuello",      nm:"Cuello",      como:"Justo debajo de la nuez, hombros relajados y mirando al frente. La cinta apoyada, sin apretar."},
+  {id:"pecho",       nm:"Pecho",       como:"Alrededor del torso a la altura de los pezones, al final de una espiración normal."},
+  {id:"cintura",     nm:"Cintura",     como:"A la altura del ombligo, de pie y relajado, después de exhalar. Sin meter la panza: la medida sirve solo si es honesta."},
+  {id:"cadera",      nm:"Cadera",      como:"En la parte más ancha de los glúteos, con los pies juntos."},
+  {id:"brazo",       nm:"Brazo",       como:"En el punto medio entre hombro y codo, brazo colgando relajado. Siempre el mismo brazo."},
+  {id:"muslo",       nm:"Muslo",       como:"En el punto medio entre la ingle y la rodilla, peso repartido en las dos piernas."},
+  {id:"pantorrilla", nm:"Pantorrilla", como:"En la parte más ancha, de pie."}
+];
+var log10 = function(x){ return Math.log(x)/Math.LN10; };
 
 var MET = { pesas:5, boxeo:9.5, ciclismo:8 };
 var ACTS = ["pesas","boxeo","ciclismo"];
@@ -528,9 +621,9 @@ function save(){
   guardar("nutri:v3", {
     sexo:state.sexo, edad:state.edad, altura:state.altura, peso:state.peso,
     objetivo:state.objetivo, ritmo:state.ritmo, act:state.act,
-    logs:state.logs, metas:state.metas, legacy:state.legacy, custom:state.custom,
+    logs:state.logs, metas:state.metas, mins:state.mins, legacy:state.legacy, custom:state.custom,
     stock:state.stock, orden:state.orden, edits:state.edits,
-    extra:state.extra, ocultos:state.ocultos
+    extra:state.extra, ocultos:state.ocultos, med:state.med
   });
 }
 function load(){
@@ -639,6 +732,7 @@ function render(){
 
   state.meta = {kcal:r.kcal, prot:r.prot, min:Math.min(r.protMin, r.prot)};
   renderDiario();
+  renderMed();
   save();
 }
 
@@ -736,8 +830,8 @@ function renderDiario(){
   $("aviso-dia").innerHTML = state.dia === hoyISO() ? ""
     : '<div class="otrodia">Estás cargando el '+lindaFecha(state.dia)+', no el día de hoy.</div>';
 
-  if(t.prot > 0) state.metas[state.dia] = meta;
-  else if(state.metas[state.dia]) delete state.metas[state.dia];
+  if(t.prot > 0){ state.metas[state.dia] = meta; state.mins[state.dia] = min; }
+  else { delete state.metas[state.dia]; delete state.mins[state.dia]; }
   renderHist();
 
   var all = todos(), html="", logDia = state.logs[state.dia]||{};
@@ -911,7 +1005,7 @@ function borrarAlimento(id, conservar){
     delete state.logs[k][id];
     if(!Object.keys(state.logs[k]).length){
       delete state.logs[k];
-      if(!state.extra[k]) delete state.metas[k];
+      if(!state.extra[k]){ delete state.metas[k]; delete state.mins[k]; }
     }
   }
   for(i=state.custom.length-1;i>=0;i--) if(state.custom[i].id===id) state.custom.splice(i,1);
@@ -992,15 +1086,24 @@ function lindaFecha(iso){
   return d.toLocaleDateString("es-AR",{weekday:"short",day:"2-digit",month:"2-digit"});
 }
 
+/* mínimo del día. Los días viejos, cargados antes de que se guardara el mínimo,
+   se estiman con la misma proporción mínimo/meta que rige hoy. */
+function minDe(k, m){
+  if(state.mins[k] > 0) return state.mins[k];
+  if(!(m > 0)) return 0;
+  var mh = state.meta.prot || 0, nh = state.meta.min || 0;
+  return (mh > 0 && nh > 0 && nh < mh) ? Math.round(m * nh / mh) : 0;
+}
 function entradas(){
   var out = {}, dias = {}, k;
-  for(k in state.legacy) out[k] = state.legacy[k];
+  for(k in state.legacy) out[k] = {p:state.legacy[k].p, k:state.legacy[k].k, m:state.legacy[k].m};
   for(k in state.logs) dias[k] = 1;
   for(k in state.extra) dias[k] = 1;
   for(k in dias){
     var t = totalesDe(k);
     if(t.prot > 0) out[k] = {p:t.prot, k:t.kcal, m:state.metas[k] || state.meta.prot || 0};
   }
+  for(k in out) out[k].mn = minDe(k, out[k].m);
   return out;
 }
 
@@ -1017,7 +1120,7 @@ function renderHist(){
     cur.setDate(cur.getDate()+1);
   }
 
-  var metaHoy = state.meta.prot||0, tope = metaHoy;
+  var metaHoy = state.meta.prot||0, minHoy = state.meta.min||0, tope = metaHoy;
   for(i=0;i<dias.length;i++) if(dias[i].e){ tope=Math.max(tope, dias[i].e.p, dias[i].e.m||0); }
   tope = Math.max(tope*1.12, 10);
 
@@ -1026,15 +1129,20 @@ function renderHist(){
     var d=dias[i], hoy = i===dias.length-1, dd=d.k.slice(8), mm=d.k.slice(5,7);
     if(d.e){
       var alto=Math.max((d.e.p/tope)*100,1.5), ok=d.e.m && d.e.p>=d.e.m;
-      bars += '<div class="col" title="'+lindaFecha(d.k)+': '+d.e.p+' g">'
+      var bajo = d.e.mn>0 && d.e.p < d.e.mn;
+      var tit = lindaFecha(d.k)+': '+d.e.p+' g'
+              + (d.e.mn?' \u00b7 m\u00edn '+d.e.mn+' g':'') + (d.e.m?' \u00b7 meta '+d.e.m+' g':'');
+      bars += '<div class="col" title="'+tit+'">'
             + (hoy?'<div class="val">'+d.e.p+'</div>':'')
-            + '<div class="bar'+(ok?" done":"")+'" style="height:'+alto+'%"></div></div>';
+            + '<div class="bar'+(ok?" done":(bajo?" low":""))+'" style="height:'+alto+'%"></div></div>';
     } else {
       bars += '<div class="col" title="'+lindaFecha(d.k)+': sin registro"><div class="bar none" style="height:2%"></div></div>';
     }
     eje += '<div class="'+(hoy?"hoy":(dd==="01"?"mes":""))+'">'+(dd==="01"?dd+"/"+mm:dd)+'</div>';
   }
   var linea = metaHoy>0 ? '<div class="metaline" style="bottom:'+((metaHoy/tope)*100)+'%"><b>META '+metaHoy+' G</b></div>' : "";
+  if(minHoy>0 && minHoy<metaHoy)
+    linea += '<div class="minline" style="bottom:'+((minHoy/tope)*100)+'%"><b>M\u00cdN '+minHoy+' G</b></div>';
   $("chart").innerHTML = bars + linea;
   $("xaxis").innerHTML = eje;
 
@@ -1061,22 +1169,415 @@ function renderHist(){
 
   var lista="";
   for(i=claves.length-1;i>=0;i--){
-    var c=claves[i], v=H[c], cumple = v.m && v.p>=v.m;
+    var c=claves[i], v=H[c], cumple = v.m && v.p>=v.m, flojo = v.mn>0 && v.p<v.mn;
     lista += '<div class="hrow"><span class="d">'+lindaFecha(c)+'</span>'
-          +  '<span class="p'+(cumple?" done":"")+'">'+v.p+' g <span>/ '+(v.m||"—")+' g · '+fmt(v.k)+' kcal</span></span></div>';
+          +  '<span class="p'+(cumple?" done":(flojo?" low":""))+'">'+v.p+' g <span>/ '
+          +  (v.mn? "mín "+v.mn+" · " : "")+'meta '+(v.m||"—")+' g · '+fmt(v.k)+' kcal</span></span></div>';
   }
   $("h-lista").innerHTML = lista || '<div class="empty">Todavía no hay días cargados. Lo que sumes en el <strong>Diario</strong> queda guardado en la fecha que tengas elegida.</div>';
+}
+
+
+/* ================= medidas ================= */
+function sumarDias(iso, n){
+  var d = new Date(iso+"T12:00:00"); d.setDate(d.getDate()+n);
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function diffDias(a,b){
+  return Math.round((new Date(b+"T12:00:00") - new Date(a+"T12:00:00"))/86400000);
+}
+function nm1(v){ return (Math.round(v*10)/10).toString().replace(".", ","); }
+function fechaCorta(iso){
+  var p=iso.split("-");
+  return p[2]+"/"+p[1];
+}
+function fechaLarga(iso){
+  var p=iso.split("-"), d=new Date(+p[0],+p[1]-1,+p[2]);
+  return d.toLocaleDateString("es-AR",{day:"2-digit",month:"short",year:"2-digit"});
+}
+
+/* registros ordenados por fecha: [{f:"YYYY-MM-DD", d:{peso, cuello, ...}}] */
+function medOrden(){
+  var ks = Object.keys(state.med).sort(), out = [], i;
+  for(i=0;i<ks.length;i++) out.push({f:ks[i], d:state.med[ks[i]]});
+  return out;
+}
+function medConPeso(){
+  var r = medOrden(), out = [], i;
+  for(i=0;i<r.length;i++) if(r[i].d.peso > 0) out.push(r[i]);
+  return out;
+}
+function ultimoCon(campo){
+  var r = medOrden(), i;
+  for(i=r.length-1;i>=0;i--) if(r[i].d[campo] > 0) return r[i];
+  return null;
+}
+
+/* trayectoria planificada del peso, con el mismo ritmo que sale de C\u00e1lculo */
+function planPeso(){
+  var r = calcular(); if(!r) return null;
+  var conPeso = medConPeso(), inicio, w0;
+  if(conPeso.length){ inicio = conPeso[0].f; w0 = conPeso[0].d.peso; }
+  else { inicio = hoyISO(); w0 = +state.peso; }
+  if(!(w0 > 0)) return null;
+  var obj = +state.objetivo, kgSem = Math.abs(r.delta)*7/7700;
+  var signo = obj < w0 ? -1 : (obj > w0 ? 1 : 0);
+  var dias = (kgSem > 0 && signo) ? Math.round(Math.abs(w0-obj)/kgSem*7) : 0;
+  return {
+    inicio:inicio, w0:w0, obj:obj, kgSem:kgSem, signo:signo, dias:dias, r:r,
+    en:function(d){
+      if(!signo || !kgSem) return w0;
+      var v = w0 + signo*kgSem*(d/7);
+      return signo < 0 ? Math.max(v, obj) : Math.min(v, obj);
+    }
+  };
+}
+
+/* ---- gr\u00e1fico de l\u00ednea en SVG ---- */
+function medChart(){
+  var sel = state.medSel || "peso", esPeso = sel === "peso";
+  var regs = medOrden(), pts = [], i, v;
+  for(i=0;i<regs.length;i++){ v = regs[i].d[sel]; if(v > 0) pts.push({f:regs[i].f, v:v}); }
+  var p = esPeso ? planPeso() : null;
+
+  if(!pts.length && !p){
+    $("m-chart").innerHTML = '<div class="empty">Todav\u00eda no hay datos de esta medida. Carg\u00e1 un registro arriba y ac\u00e1 aparece la curva.</div>';
+    $("m-leyenda").innerHTML = "";
+    return;
+  }
+
+  var hoy = hoyISO();
+  var f0 = pts.length ? pts[0].f : p.inicio;
+  if(p && p.inicio < f0) f0 = p.inicio;
+  var f1 = pts.length ? pts[pts.length-1].f : f0;
+  if(hoy > f1) f1 = hoy;
+  if(p && p.dias > 0){
+    var fin = sumarDias(p.inicio, p.dias);
+    if(fin > f1) f1 = fin;
+  }
+  var span = diffDias(f0, f1); if(span < 1) span = 1;
+
+  /* rango vertical */
+  var vals = [];
+  for(i=0;i<pts.length;i++) vals.push(pts[i].v);
+  if(p){ vals.push(p.w0); vals.push(p.obj); }
+  var vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals);
+  var pad = (vmax - vmin) * 0.12 || Math.max(vmax*0.02, 1);
+  vmin -= pad; vmax += pad;
+
+  var W=340, H=190, PL=34, PR=9, PT=12, PB=21, iw=W-PL-PR, ih=H-PT-PB;
+  function X(d){ return PL + (d/span)*iw; }
+  function Xf(f){ return X(diffDias(f0, f)); }
+  function Y(val){ return PT + (vmax===vmin ? ih/2 : (vmax-val)/(vmax-vmin)*ih); }
+  function n(x){ return (Math.round(x*10)/10); }
+
+  var g = '<svg class="lchart" viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" role="img">';
+
+  /* grilla y escala */
+  for(i=0;i<=3;i++){
+    var gv = vmin + (vmax-vmin)*i/3, gy = Y(gv);
+    g += '<line x1="'+PL+'" y1="'+n(gy)+'" x2="'+(W-PR)+'" y2="'+n(gy)+'" stroke="var(--grid)" stroke-width="0.7"/>'
+       + '<text x="'+(PL-4)+'" y="'+n(gy+3)+'" text-anchor="end" font-size="8" fill="var(--ink-soft)" '
+       + 'font-family="Chivo Mono, monospace">'+nm1(gv)+'</text>';
+  }
+  g += '<line x1="'+PL+'" y1="'+PT+'" x2="'+PL+'" y2="'+(PT+ih)+'" stroke="var(--ink)" stroke-width="1"/>'
+     + '<line x1="'+PL+'" y1="'+(PT+ih)+'" x2="'+(W-PR)+'" y2="'+(PT+ih)+'" stroke="var(--ink)" stroke-width="1"/>';
+
+  /* hoy */
+  if(hoy > f0 && hoy < f1){
+    var xh = Xf(hoy);
+    g += '<line x1="'+n(xh)+'" y1="'+PT+'" x2="'+n(xh)+'" y2="'+(PT+ih)+'" stroke="var(--rule)" stroke-width="0.7" stroke-dasharray="2 3"/>'
+       + '<text x="'+n(xh)+'" y="'+(PT-3)+'" text-anchor="middle" font-size="7.5" fill="var(--ink-soft)" '
+       + 'font-family="Chivo Mono, monospace">HOY</text>';
+  }
+
+  /* plan y objetivo */
+  if(p){
+    var yObj = Y(p.obj);
+    g += '<line x1="'+PL+'" y1="'+n(yObj)+'" x2="'+(W-PR)+'" y2="'+n(yObj)+'" stroke="var(--olive)" '
+       + 'stroke-width="1.2" stroke-dasharray="5 3"/>';
+    var dFin = p.dias > 0 ? Math.min(p.dias, span) : span;
+    var pl = X(diffDias(f0,p.inicio))+","+n(Y(p.w0));
+    pl += " " + n(X(diffDias(f0,p.inicio)+dFin))+","+n(Y(p.en(dFin)));
+    if(diffDias(f0,p.inicio)+dFin < span) pl += " " + n(X(span))+","+n(Y(p.obj));
+    g += '<polyline points="'+pl+'" fill="none" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="4 3"/>';
+  }
+
+  /* serie real */
+  if(pts.length){
+    var d = "", j;
+    for(j=0;j<pts.length;j++) d += (j?" ":"") + n(Xf(pts[j].f))+","+n(Y(pts[j].v));
+    if(pts.length > 1)
+      g += '<polyline points="'+d+'" fill="none" stroke="var(--teal)" stroke-width="2" '
+         + 'stroke-linejoin="round" stroke-linecap="round"/>';
+    for(j=0;j<pts.length;j++)
+      g += '<circle cx="'+n(Xf(pts[j].f))+'" cy="'+n(Y(pts[j].v))+'" r="'+(j===pts.length-1?3:2)+'" '
+         + 'fill="var(--teal)"/>';
+    var ul = pts[pts.length-1], ux = Xf(ul.f), uy = Y(ul.v);
+    g += '<text x="'+n(ux < W-52 ? ux+6 : ux-6)+'" y="'+n(uy-6)+'" text-anchor="'+(ux < W-52?"start":"end")+'" '
+       + 'font-size="9.5" font-weight="600" fill="var(--teal)" font-family="Chivo Mono, monospace">'+nm1(ul.v)+'</text>';
+  }
+
+  /* eje de fechas */
+  g += '<text x="'+PL+'" y="'+(H-6)+'" font-size="8" fill="var(--ink-soft)" font-family="Chivo Mono, monospace">'+fechaCorta(f0)+'</text>'
+     + '<text x="'+(W-PR)+'" y="'+(H-6)+'" text-anchor="end" font-size="8" fill="var(--ink-soft)" '
+     + 'font-family="Chivo Mono, monospace">'+fechaCorta(f1)+'</text>';
+  g += '</svg>';
+
+  $("m-chart").innerHTML = g;
+  var uni = esPeso ? "kg" : "cm";
+  var leyenda = '<div class="lleg"><span><i></i>'+(esPeso?"Peso real":nombreMedida(sel))+' ('+uni+')</span>';
+  if(p) leyenda += '<span class="plan"><i></i>Plan</span><span class="obj"><i></i>Objetivo '+nm1(p.obj)+' kg</span>';
+  $("m-leyenda").innerHTML = leyenda + '</div>';
+}
+function nombreMedida(id){
+  for(var i=0;i<MEDIDAS.length;i++) if(MEDIDAS[i].id===id) return MEDIDAS[i].nm;
+  return id;
+}
+
+/* ---- panel de n\u00fameros: lo mismo que C\u00e1lculo, m\u00e1s el avance real ---- */
+function medSpec(){
+  var p = planPeso(), conPeso = medConPeso(), filas = "";
+  function fila(k, v){ filas += '<div class="spec-row"><dt>'+k+'</dt><dd>'+v+'</dd></div>'; }
+  if(!p){ $("m-spec").innerHTML = ""; return; }
+  var r = p.r, hoy = hoyISO();
+  var ult = conPeso.length ? conPeso[conPeso.length-1] : null;
+  var pesoAct = ult ? ult.d.peso : +state.peso;
+  var alt = +state.altura, imc = alt>0 ? pesoAct/Math.pow(alt/100,2) : 0;
+
+  fila("Peso actual", nm1(pesoAct)+'<span class="u">kg'+(ult?" \u00b7 "+fechaLarga(ult.f):"")+'</span>');
+  fila("Peso objetivo", nm1(p.obj)+'<span class="u">kg</span>');
+  fila("Falta", nm1(Math.abs(pesoAct-p.obj))+'<span class="u">kg</span>');
+  fila("Ritmo del plan", nm1(p.kgSem)+'<span class="u">kg/semana</span>');
+
+  if(conPeso.length > 1){
+    var a = conPeso[0], b = conPeso[conPeso.length-1], dd = diffDias(a.f, b.f);
+    var cambio = b.d.peso - a.d.peso;
+    fila("Cambio real", (cambio>0?"+":"\u2212")+nm1(Math.abs(cambio))+'<span class="u">kg en '+dd+' d\u00edas</span>');
+    if(dd >= 7){
+      var real = cambio/(dd/7);
+      fila("Ritmo real", (real>0?"+":"\u2212")+nm1(Math.abs(real))+'<span class="u">kg/semana</span>');
+      var haciaObj = (p.signo<0 && real<0) || (p.signo>0 && real>0);
+      if(haciaObj){
+        var semRest = Math.abs(pesoAct-p.obj)/Math.abs(real);
+        fila("Llegada al ritmo real", fechaLarga(sumarDias(hoy, Math.round(semRest*7)))
+             +'<span class="u">\u00b7 faltan ~'+Math.round(semRest)+' semanas</span>');
+      }
+    }
+    var esperado = p.en(diffDias(p.inicio, b.f)), desvio = b.d.peso - esperado;
+    var adelantado = p.signo<0 ? desvio<0 : desvio>0;
+    var txt = Math.abs(desvio) < 0.2 ? "justo en el plan"
+            : nm1(Math.abs(desvio))+" kg "+(adelantado?"adelantado":"atrasado");
+    fila("Contra el plan", '<span class="dlt '+(Math.abs(desvio)<0.2?"":(adelantado?"bien":"mal"))+'">'+txt+'</span>');
+  }
+  if(p.dias > 0) fila("Llegada seg\u00fan el plan", fechaLarga(sumarDias(p.inicio, p.dias))
+       +'<span class="u">\u00b7 '+Math.round(p.dias/7)+' semanas en total</span>');
+  if(imc) fila("IMC actual \u2192 objetivo", imc.toFixed(1)+" \u2192 "+r.imcObj.toFixed(1));
+  fila("Calor\u00edas del plan", fmt(r.kcal)+'<span class="u">kcal/d\u00eda</span>');
+  fila("Prote\u00edna del plan", r.prot+'<span class="u">g/d\u00eda \u00b7 m\u00ednimo '+r.protMin+' g</span>');
+  $("m-spec").innerHTML = filas;
+}
+
+/* ---- grasa corporal (M\u00e9todo de la Marina de EE.UU., Hodgdon-Beckett) y forma ---- */
+function grasaNavy(d){
+  var h = +state.altura, c = d.cuello, w = d.cintura, cad = d.cadera, bf;
+  if(!(h > 0)) return null;
+  if(state.sexo === "m"){
+    if(!(c > 0 && w > 0) || w - c <= 0) return null;
+    bf = 495/(1.0324 - 0.19077*log10(w-c) + 0.15456*log10(h)) - 450;
+  } else {
+    if(!(c > 0 && w > 0 && cad > 0) || w + cad - c <= 0) return null;
+    bf = 495/(1.29579 - 0.35004*log10(w+cad-c) + 0.22100*log10(h)) - 450;
+  }
+  return (bf > 2 && bf < 70) ? bf : null;
+}
+function medComp(){
+  var regs = medOrden(), html = "", filas = "";
+  function fila(k, v){ filas += '<div class="spec-row"><dt>'+k+'</dt><dd>'+v+'</dd></div>'; }
+
+  var ultC = ultimoCon("cintura"), alt = +state.altura;
+  var ultTot = regs.length ? regs[regs.length-1] : null;
+
+  /* grasa: busca el \u00faltimo registro que tenga los datos necesarios */
+  var g = null, gf = null, i;
+  for(i=regs.length-1;i>=0;i--){ var x = grasaNavy(regs[i].d); if(x != null){ g = x; gf = regs[i]; break; } }
+  if(g != null){
+    var pesoG = gf.d.peso || (ultimoCon("peso") ? ultimoCon("peso").d.peso : +state.peso);
+    fila("Grasa corporal estimada", g.toFixed(1).replace(".",",")+'<span class="u">% \u00b7 '+fechaLarga(gf.f)+'</span>');
+    if(pesoG > 0){
+      fila("Masa grasa", nm1(pesoG*g/100)+'<span class="u">kg</span>');
+      fila("Masa magra", nm1(pesoG*(1-g/100))+'<span class="u">kg</span>');
+    }
+    /* comparaci\u00f3n con el primer registro que tenga los datos */
+    for(i=0;i<regs.length;i++){
+      var x0 = grasaNavy(regs[i].d);
+      if(x0 != null && regs[i].f !== gf.f){
+        var dg = g - x0;
+        fila("Cambio de grasa", '<span class="dlt '+(dg<0?"bien":(dg>0?"mal":""))+'">'
+             +(dg>0?"+":"\u2212")+Math.abs(dg).toFixed(1).replace(".",",")+' pts</span>'
+             +'<span class="u">\u00b7 desde '+fechaLarga(regs[i].f)+'</span>');
+        break;
+      }
+    }
+  }
+  if(ultC && alt > 0){
+    var ratio = ultC.d.cintura/alt;
+    var ok = ratio < 0.5;
+    fila("Cintura / altura", ratio.toFixed(2).replace(".",",")
+         +'<span class="u">'+(ok?"por debajo de 0,50":"arriba de 0,50")+'</span>');
+    var u1 = state.sexo === "m" ? 94 : 80, u2 = state.sexo === "m" ? 102 : 88;
+    var nivel = ultC.d.cintura < u1 ? "riesgo bajo"
+              : (ultC.d.cintura < u2 ? "riesgo aumentado" : "riesgo alto");
+    fila("Cintura (umbrales OMS)", nm1(ultC.d.cintura)+'<span class="u">cm \u00b7 '+nivel+' ('+u1+'/'+u2+')</span>');
+  }
+  if(filas) html += '<dl class="spec" style="margin-top:0">'+filas+'</dl>';
+  else html += '<div class="empty">Carg\u00e1 al menos <strong>cuello</strong> y <strong>cintura</strong> y ac\u00e1 aparece la grasa corporal estimada, la masa magra y la relaci\u00f3n cintura/altura.</div>';
+
+  /* tabla de cambios por medida */
+  var tabla = "";
+  for(i=0;i<MEDIDAS.length;i++){
+    var id = MEDIDAS[i].id, u = ultimoCon(id);
+    if(!u) continue;
+    var primero = null, j;
+    for(j=0;j<regs.length;j++) if(regs[j].d[id] > 0){ primero = regs[j]; break; }
+    var dif = (primero && primero.f !== u.f) ? u.d[id] - primero.d[id] : null;
+    var clase = "";
+    if(dif !== null && Math.abs(dif) >= 0.1 && id === "cintura") clase = dif < 0 ? "bien" : "mal";
+    tabla += '<div class="spec-row"><dt>'+MEDIDAS[i].nm+'</dt><dd>'+nm1(u.d[id])+'<span class="u">cm'
+          +  (dif === null ? "" : ' \u00b7 <span class="dlt '+clase+'">'+(dif>0?"+":(dif<0?"\u2212":"\u00b1"))
+             + nm1(Math.abs(dif))+'</span>')
+          +  '</span></dd></div>';
+  }
+  if(tabla) html += '<div class="legend" style="margin-top:18px">\u00daltima medida \u00b7 cambio desde la primera</div>'
+                 +  '<dl class="spec" style="margin-top:0">'+tabla+'</dl>';
+  if(ultTot === null) html = '<div class="empty">Sin registros todav\u00eda.</div>';
+  $("m-comp").innerHTML = html;
+}
+
+/* ---- lista de registros ---- */
+function medLista(){
+  var regs = medOrden(), html = "", i, j;
+  for(i=regs.length-1;i>=0;i--){
+    var f = regs[i].f, d = regs[i].d, det = [];
+    for(j=0;j<MEDIDAS.length;j++) if(d[MEDIDAS[j].id] > 0)
+      det.push(MEDIDAS[j].nm.toLowerCase()+" "+nm1(d[MEDIDAS[j].id]));
+    html += '<div class="mrow" data-f="'+f+'">'
+      + '<span class="d">'+fechaLarga(f)+'</span>'
+      + '<span class="v">'+(d.peso > 0 ? nm1(d.peso)+' kg' : '\u2014')+'</span>'
+      + '<button class="x" data-act="del" data-f="'+f+'" aria-label="Borrar el registro del '+fechaLarga(f)+'">borrar</button>'
+      + (det.length ? '<span class="sub">'+esc(det.join(" \u00b7 "))+' cm</span>' : '')
+      + '</div>';
+  }
+  $("m-lista").innerHTML = html || '<div class="empty">Sin registros. El primero que cargues marca el arranque del plan.</div>';
+}
+
+function medChips(){
+  var html = '<button class="chip" data-s="peso" aria-pressed="'+(state.medSel==="peso")+'">Peso</button>', i;
+  for(i=0;i<MEDIDAS.length;i++){
+    if(!ultimoCon(MEDIDAS[i].id)) continue;
+    html += '<button class="chip" data-s="'+MEDIDAS[i].id+'" aria-pressed="'
+         +  (state.medSel===MEDIDAS[i].id)+'">'+MEDIDAS[i].nm+'</button>';
+  }
+  $("m-chips").innerHTML = html;
+}
+
+function renderMed(){
+  if(!$("m-campos").innerHTML) return;   /* todav\u00eda no se arm\u00f3 el formulario */
+  if(state.medSel !== "peso" && !ultimoCon(state.medSel)) state.medSel = "peso";
+  medChips(); medChart(); medSpec(); medComp(); medLista();
+}
+
+/* ---- formulario ---- */
+function medPintarForm(f){
+  var d = f && state.med[f] ? state.med[f] : {}, i;
+  $("m-fecha").value = f || hoyISO();
+  $("m-peso").value = d.peso > 0 ? d.peso : "";
+  for(i=0;i<MEDIDAS.length;i++){
+    var el = $("m-"+MEDIDAS[i].id);
+    if(el) el.value = d[MEDIDAS[i].id] > 0 ? d[MEDIDAS[i].id] : "";
+  }
+  var filas = $("m-lista").querySelectorAll(".mrow");
+  for(i=0;i<filas.length;i++) filas[i].classList.toggle("edit", filas[i].dataset.f === f);
+}
+function medAviso(txt){
+  $("m-msg").innerHTML = '<div class="ok-msg">'+txt+'</div>';
+  setTimeout(function(){ $("m-msg").innerHTML = ""; }, 5000);
+}
+function medGuardar(){
+  var f = $("m-fecha").value || hoyISO();
+  var d = {}, algo = false, i, v;
+  v = parseFloat($("m-peso").value);
+  if(v > 0){ d.peso = Math.round(v*10)/10; algo = true; }
+  for(i=0;i<MEDIDAS.length;i++){
+    v = parseFloat($("m-"+MEDIDAS[i].id).value);
+    if(v > 0){ d[MEDIDAS[i].id] = Math.round(v*10)/10; algo = true; }
+  }
+  if(!algo){ $("m-peso").focus(); return; }
+  state.med[f] = d;
+
+  /* el registro m\u00e1s nuevo manda: sincroniza el peso de C\u00e1lculo */
+  var cp = medConPeso();
+  if(cp.length && cp[cp.length-1].f === f && d.peso > 0){
+    state.peso = d.peso;
+    $("peso").value = d.peso;
+  }
+  medPintarForm("");
+  render();                 /* recalcula todo y vuelve a dibujar medidas */
+  save();
+  medAviso("Registro del <strong>"+fechaLarga(f)+"</strong> guardado.");
+}
+function medInit(){
+  var i, campos = "", como = "";
+  for(i=0;i<MEDIDAS.length;i++){
+    campos += '<label><span>'+MEDIDAS[i].nm+' (cm)</span>'
+           +  '<input id="m-'+MEDIDAS[i].id+'" type="number" inputmode="decimal" step="0.1" min="10" max="250" placeholder="\u2014"></label>';
+    como += '<li><b>'+MEDIDAS[i].nm+'.</b> '+MEDIDAS[i].como+'</li>';
+  }
+  como += '<li><b>Siempre igual.</b> A la ma\u00f1ana, en ayunas y despu\u00e9s de ir al ba\u00f1o, '
+       +  'con la misma cinta y la misma ropa. Med\u00ed tres veces y anot\u00e1 el promedio.</li>'
+       +  '<li><b>Cada cu\u00e1nto.</b> El peso, todos los d\u00edas o d\u00eda por medio (var\u00eda mucho con el agua y la comida). '
+       +  'Las medidas con cinta, cada 2 semanas: antes de eso el cambio no se distingue del error de la cinta.</li>';
+  $("m-campos").innerHTML = campos;
+  $("m-como").innerHTML = como;
+  $("m-fecha").value = hoyISO();
+  $("m-fecha").max = hoyISO();
+
+  $("m-add").addEventListener("click", medGuardar);
+  $("m-chips").addEventListener("click", function(ev){
+    var b = ev.target.closest("button"); if(!b) return;
+    state.medSel = b.dataset.s;
+    renderMed();
+  });
+  $("m-lista").addEventListener("click", function(ev){
+    var b = ev.target.closest("button");
+    if(b && b.dataset.act === "del"){
+      if(!confirm("\u00bfBorrar el registro del "+fechaLarga(b.dataset.f)+"?")) return;
+      delete state.med[b.dataset.f];
+      medPintarForm("");
+      render(); save();
+      return;
+    }
+    var row = ev.target.closest(".mrow"); if(!row) return;
+    medPintarForm(row.dataset.f);
+    $("m-peso").focus();
+  });
+  $("m-borrar").addEventListener("click", function(){
+    if(!confirm("\u00bfBorrar todos los registros de peso y medidas? No se puede deshacer.")) return;
+    state.med = {};
+    medPintarForm("");
+    render(); save();
+  });
 }
 
 /* ---------- respaldo ---------- */
 function datosActuales(){
   return {
-    app:"ficha-nutricional", version:6, generado:new Date().toISOString(),
+    app:"ficha-nutricional", version:7, generado:new Date().toISOString(),
     sexo:state.sexo, edad:state.edad, altura:state.altura, peso:state.peso,
     objetivo:state.objetivo, ritmo:state.ritmo, act:state.act,
-    logs:state.logs, metas:state.metas, legacy:state.legacy, custom:state.custom,
+    logs:state.logs, metas:state.metas, mins:state.mins, legacy:state.legacy, custom:state.custom,
     stock:state.stock, orden:state.orden, edits:state.edits,
-    extra:state.extra, ocultos:state.ocultos
+    extra:state.extra, ocultos:state.ocultos, med:state.med
   };
 }
 function avisoRespaldo(txt){
@@ -1107,10 +1608,12 @@ $("b-file").addEventListener("change", function(){
     if(!confirm("Restaurar el respaldo reemplaza todo lo que tenés cargado. ¿Seguir?")) return;
     ["sexo","edad","altura","peso","objetivo","ritmo"].forEach(function(k){ if(d[k]!=null) state[k]=d[k]; });
     if(d.act) ACTS.forEach(function(a){ if(d.act[a]) state.act[a]=d.act[a]; });
-    state.logs = d.logs||{}; state.metas = d.metas||{}; state.legacy = d.legacy||{}; state.custom = d.custom||[];
+    state.logs = d.logs||{}; state.metas = d.metas||{}; state.mins = d.mins||{};
+    state.legacy = d.legacy||{}; state.custom = d.custom||[];
     state.stock = d.stock||{}; state.orden = d.orden||[]; state.edits = d.edits||{};
-    state.extra = d.extra||{}; state.ocultos = d.ocultos||{};
+    state.extra = d.extra||{}; state.ocultos = d.ocultos||{}; state.med = d.med||{};
     state.editando = null; state.borrando = null;
+    medPintarForm("");
     ["edad","altura","peso","objetivo","ritmo"].forEach(function(k){ $(k).value = state[k]; });
     ACTS.forEach(function(a){ $("a-"+a+"-d").value=state.act[a].d; $("a-"+a+"-m").value=state.act[a].m; });
     var bs=$("sexo").querySelectorAll("button");
@@ -1302,15 +1805,16 @@ $("n-add").addEventListener("click", function(){
 });
 $("h-borrar").addEventListener("click", function(){
   if(!confirm("¿Borrar todos los días guardados? No se puede deshacer.")) return;
-  state.logs = {}; state.metas = {}; state.legacy = {}; state.extra = {};
+  state.logs = {}; state.metas = {}; state.mins = {}; state.legacy = {}; state.extra = {};
   renderDiario(); renderHist(); save();
 });
-var tabs=[$("tab-calc"),$("tab-diario"),$("tab-stock"),$("tab-hist")],
-    panels=[$("p-calc"),$("p-diario"),$("p-stock"),$("p-hist")];
+var tabs=[$("tab-calc"),$("tab-diario"),$("tab-stock"),$("tab-med"),$("tab-hist")],
+    panels=[$("p-calc"),$("p-diario"),$("p-stock"),$("p-med"),$("p-hist")];
 function irA(i){
   tabs.forEach(function(x,j){ x.setAttribute("aria-selected", i===j?"true":"false"); panels[j].hidden = i!==j; });
   if(i===2) renderStock();
-  if(i===3) renderHist();
+  if(i===3) renderMed();
+  if(i===4) renderHist();
 }
 tabs.forEach(function(t,i){ t.addEventListener("click", function(){ irA(i); }); });
 
@@ -1319,6 +1823,7 @@ $("hoy").textContent = new Date().toLocaleDateString("es-AR",{day:"2-digit",mont
 state.dia = hoyISO();
 $("dia").value = state.dia;
 $("dia").max = hoyISO();
+medInit();
 load().then(function(d){
   if(d){
     ["sexo","edad","altura","peso","objetivo","ritmo"].forEach(function(k){ if(d[k]!=null) state[k]=d[k]; });
@@ -1326,7 +1831,9 @@ load().then(function(d){
     state.custom = d.custom||[];
     state.logs = d.logs||{};
     state.metas = d.metas||{};
+    state.mins = d.mins||{};
     state.legacy = d.legacy||{};
+    state.med = d.med||{};
     state.stock = d.stock||{};
     state.orden = d.orden||[];
     state.edits = d.edits||{};

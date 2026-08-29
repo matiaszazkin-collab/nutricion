@@ -3,7 +3,7 @@
    Estrategia: el HTML se pide siempre a la red primero (así una versión nueva se ve
    apenas se sube, sin tener que desinstalar nada) y se cae al cache solo si no hay
    señal. Los iconos y el manifest, que no cambian, salen del cache directo. */
-var CACHE = "ficha-nutricional-v7";
+var CACHE = "ficha-nutricional-v8";
 var ARCHIVOS = [
   "./", "./index.html", "./manifest.webmanifest",
   "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png"
