@@ -1235,14 +1235,34 @@ function planPeso(){
 
 /* ---- gr\u00e1fico de l\u00ednea en SVG ---- */
 function medChart(){
-  var sel = state.medSel || "peso", esPeso = sel === "peso";
-  var regs = medOrden(), pts = [], i, v;
-  for(i=0;i<regs.length;i++){ v = regs[i].d[sel]; if(v > 0) pts.push({f:regs[i].f, v:v}); }
-  var p = esPeso ? planPeso() : null;
+  var sel = state.medSel || "peso", esPeso = sel === "peso", esGrasa = sel === "grasa";
+  var regs = medOrden(), pts = [], i, v, x;
+  if(esGrasa){
+    for(i=0;i<regs.length;i++){ x = grasaEn(regs[i]); if(x) pts.push({f:x.f, v:x.bf}); }
+  } else {
+    for(i=0;i<regs.length;i++){ v = regs[i].d[sel]; if(v > 0) pts.push({f:regs[i].f, v:v}); }
+  }
+
+  var p = (esPeso || esGrasa) ? planPeso() : null;
+  var lm = null, objLinea = null, nota = "";
+  if(esPeso && p) objLinea = p.obj;
+  if(esGrasa){
+    var go = grasaObjetivo();
+    if(go && go.pct != null){ lm = go.lm; objLinea = go.pct; }
+    else if(go){
+      p = null;
+      nota = '<div class="note">Tu peso deseado ('+nm1(go.obj)+' kg) queda por debajo de la masa magra '
+           + 'que ten\u00e9s medida ('+nm1(go.lm)+' kg), as\u00ed que no hay un porcentaje de grasa objetivo '
+           + 'alcanzable sin perder m\u00fasculo. Sub\u00ed un poco el peso deseado en <strong>C\u00e1lculo</strong>.</div>';
+    } else { p = null; }
+    if(!lm) p = null;
+  }
 
   if(!pts.length && !p){
-    $("m-chart").innerHTML = '<div class="empty">Todav\u00eda no hay datos de esta medida. Carg\u00e1 un registro arriba y ac\u00e1 aparece la curva.</div>';
-    $("m-leyenda").innerHTML = "";
+    $("m-chart").innerHTML = '<div class="empty">'+(esGrasa
+      ? 'Para estimar la grasa corporal necesito al menos un registro con <strong>cuello</strong> y <strong>cintura</strong>.'
+      : 'Todav\u00eda no hay datos de esta medida. Carg\u00e1 un registro arriba y ac\u00e1 aparece la curva.')+'</div>';
+    $("m-leyenda").innerHTML = nota;
     return;
   }
 
@@ -1257,10 +1277,33 @@ function medChart(){
   }
   var span = diffDias(f0, f1); if(span < 1) span = 1;
 
+  /* curva planificada, en kg o en % seg\u00fan la serie */
+  var planPts = null, k;
+  if(p){
+    var d0p = diffDias(f0, p.inicio);
+    if(esGrasa){
+      var ds = [];
+      for(k=0;k<=40;k++) ds.push(Math.round(d0p + (span-d0p)*k/40));
+      if(p.dias > 0 && d0p+p.dias < span) ds.push(d0p+p.dias);
+      ds.sort(function(a,b){ return a-b; });
+      planPts = [];
+      for(k=0;k<ds.length;k++){
+        var wv = p.en(ds[k]-d0p);
+        if(wv > lm) planPts.push({d:ds[k], v:(wv-lm)/wv*100});
+      }
+    } else {
+      var dFin = p.dias > 0 ? Math.min(p.dias, span-d0p) : (span-d0p);
+      planPts = [{d:d0p, v:p.w0}, {d:d0p+dFin, v:p.en(dFin)}];
+      if(d0p+dFin < span) planPts.push({d:span, v:p.obj});
+    }
+    if(planPts.length < 2) planPts = null;
+  }
+
   /* rango vertical */
   var vals = [];
   for(i=0;i<pts.length;i++) vals.push(pts[i].v);
-  if(p){ vals.push(p.w0); vals.push(p.obj); }
+  if(planPts) for(i=0;i<planPts.length;i++) vals.push(planPts[i].v);
+  if(objLinea != null) vals.push(objLinea);
   var vmin = Math.min.apply(null, vals), vmax = Math.max.apply(null, vals);
   var pad = (vmax - vmin) * 0.12 || Math.max(vmax*0.02, 1);
   vmin -= pad; vmax += pad;
@@ -1292,14 +1335,14 @@ function medChart(){
   }
 
   /* plan y objetivo */
-  if(p){
-    var yObj = Y(p.obj);
+  if(objLinea != null){
+    var yObj = Y(objLinea);
     g += '<line x1="'+PL+'" y1="'+n(yObj)+'" x2="'+(W-PR)+'" y2="'+n(yObj)+'" stroke="var(--olive)" '
        + 'stroke-width="1.2" stroke-dasharray="5 3"/>';
-    var dFin = p.dias > 0 ? Math.min(p.dias, span) : span;
-    var pl = X(diffDias(f0,p.inicio))+","+n(Y(p.w0));
-    pl += " " + n(X(diffDias(f0,p.inicio)+dFin))+","+n(Y(p.en(dFin)));
-    if(diffDias(f0,p.inicio)+dFin < span) pl += " " + n(X(span))+","+n(Y(p.obj));
+  }
+  if(planPts){
+    var pl = "";
+    for(k=0;k<planPts.length;k++) pl += (k?" ":"") + n(X(planPts[k].d))+","+n(Y(planPts[k].v));
     g += '<polyline points="'+pl+'" fill="none" stroke="var(--ink-soft)" stroke-width="1.2" stroke-dasharray="4 3"/>';
   }
 
@@ -1325,12 +1368,15 @@ function medChart(){
   g += '</svg>';
 
   $("m-chart").innerHTML = g;
-  var uni = esPeso ? "kg" : "cm";
-  var leyenda = '<div class="lleg"><span><i></i>'+(esPeso?"Peso real":nombreMedida(sel))+' ('+uni+')</span>';
-  if(p) leyenda += '<span class="plan"><i></i>Plan</span><span class="obj"><i></i>Objetivo '+nm1(p.obj)+' kg</span>';
-  $("m-leyenda").innerHTML = leyenda + '</div>';
+  var uni = esPeso ? "kg" : (esGrasa ? "%" : "cm");
+  var nombre = esPeso ? "Peso real" : (esGrasa ? "Grasa estimada" : nombreMedida(sel));
+  var leyenda = '<div class="lleg"><span><i></i>'+nombre+' ('+uni+')</span>';
+  if(planPts) leyenda += '<span class="plan"><i></i>Plan</span>';
+  if(objLinea != null) leyenda += '<span class="obj"><i></i>Objetivo '+nm1(objLinea)+' '+uni+'</span>';
+  $("m-leyenda").innerHTML = leyenda + '</div>' + nota;
 }
 function nombreMedida(id){
+  if(id === "grasa") return "Grasa";
   for(var i=0;i<MEDIDAS.length;i++) if(MEDIDAS[i].id===id) return MEDIDAS[i].nm;
   return id;
 }
@@ -1391,6 +1437,39 @@ function grasaNavy(d){
   }
   return (bf > 2 && bf < 70) ? bf : null;
 }
+/* peso del d\u00eda de la medici\u00f3n; si ese registro no trae peso, el m\u00e1s cercano */
+function pesoCercano(f){
+  var cp = medConPeso(), best = null, i;
+  for(i=0;i<cp.length;i++)
+    if(best === null || Math.abs(diffDias(cp[i].f, f)) < Math.abs(diffDias(best.f, f))) best = cp[i];
+  return best ? best.d.peso : +state.peso;
+}
+function grasaEn(reg){
+  var bf = grasaNavy(reg.d);
+  if(bf == null) return null;
+  var peso = reg.d.peso > 0 ? reg.d.peso : pesoCercano(reg.f);
+  return {f:reg.f, bf:bf, peso:peso, lm: peso > 0 ? peso*(1-bf/100) : null};
+}
+function ultimaGrasa(){
+  var r = medOrden(), i, x;
+  for(i=r.length-1;i>=0;i--){ x = grasaEn(r[i]); if(x) return x; }
+  return null;
+}
+function primeraGrasa(){
+  var r = medOrden(), i, x;
+  for(i=0;i<r.length;i++){ x = grasaEn(r[i]); if(x) return x; }
+  return null;
+}
+/* Grasa objetivo: la que te queda al llegar al peso deseado si lo que baja es
+   solo grasa, o sea manteniendo la masa magra que ten\u00e9s medida hoy. */
+function grasaObjetivo(){
+  var u = ultimaGrasa();
+  if(!u || !(u.lm > 0)) return null;
+  var obj = +state.objetivo;
+  if(!(obj > u.lm)) return {pct:null, lm:u.lm, obj:obj};
+  return {pct:(obj-u.lm)/obj*100, lm:u.lm, obj:obj};
+}
+
 function medComp(){
   var regs = medOrden(), html = "", filas = "";
   function fila(k, v){ filas += '<div class="spec-row"><dt>'+k+'</dt><dd>'+v+'</dd></div>'; }
@@ -1398,27 +1477,31 @@ function medComp(){
   var ultC = ultimoCon("cintura"), alt = +state.altura;
   var ultTot = regs.length ? regs[regs.length-1] : null;
 
-  /* grasa: busca el \u00faltimo registro que tenga los datos necesarios */
-  var g = null, gf = null, i;
-  for(i=regs.length-1;i>=0;i--){ var x = grasaNavy(regs[i].d); if(x != null){ g = x; gf = regs[i]; break; } }
-  if(g != null){
-    var pesoG = gf.d.peso || (ultimoCon("peso") ? ultimoCon("peso").d.peso : +state.peso);
-    fila("Grasa corporal estimada", g.toFixed(1).replace(".",",")+'<span class="u">% \u00b7 '+fechaLarga(gf.f)+'</span>');
-    if(pesoG > 0){
-      fila("Masa grasa", nm1(pesoG*g/100)+'<span class="u">kg</span>');
-      fila("Masa magra", nm1(pesoG*(1-g/100))+'<span class="u">kg</span>');
+  /* grasa corporal: \u00faltimo registro con los datos necesarios */
+  var ug = ultimaGrasa(), pg = primeraGrasa(), i;
+  if(ug){
+    fila("Grasa corporal estimada", ug.bf.toFixed(1).replace(".",",")+'<span class="u">% \u00b7 '+fechaLarga(ug.f)+'</span>');
+    if(ug.peso > 0){
+      fila("Masa grasa", nm1(ug.peso*ug.bf/100)+'<span class="u">kg</span>');
+      fila("Masa magra", nm1(ug.lm)+'<span class="u">kg</span>');
     }
-    /* comparaci\u00f3n con el primer registro que tenga los datos */
-    for(i=0;i<regs.length;i++){
-      var x0 = grasaNavy(regs[i].d);
-      if(x0 != null && regs[i].f !== gf.f){
-        var dg = g - x0;
-        fila("Cambio de grasa", '<span class="dlt '+(dg<0?"bien":(dg>0?"mal":""))+'">'
-             +(dg>0?"+":"\u2212")+Math.abs(dg).toFixed(1).replace(".",",")+' pts</span>'
-             +'<span class="u">\u00b7 desde '+fechaLarga(regs[i].f)+'</span>');
-        break;
+    if(pg && pg.f !== ug.f){
+      var dg = ug.bf - pg.bf;
+      fila("Cambio de grasa", '<span class="dlt '+(dg<0?"bien":(dg>0?"mal":""))+'">'
+           +(dg>0?"+":"\u2212")+Math.abs(dg).toFixed(1).replace(".",",")+' pts</span>'
+           +'<span class="u">\u00b7 desde '+fechaLarga(pg.f)+'</span>');
+      if(pg.peso > 0 && ug.peso > 0){
+        var dGrasa = (ug.peso*ug.bf/100) - (pg.peso*pg.bf/100);
+        var dMagra = ug.lm - pg.lm;
+        fila("De lo que cambi\u00f3", '<span class="dlt '+(dGrasa<0?"bien":"")+'">'
+             +(dGrasa>0?"+":"\u2212")+nm1(Math.abs(dGrasa))+' kg de grasa</span>'
+             +'<span class="u">\u00b7 '+(dMagra>0?"+":"\u2212")+nm1(Math.abs(dMagra))+' kg de magra</span>');
       }
     }
+    var go = grasaObjetivo();
+    if(go && go.pct != null)
+      fila("Grasa objetivo", go.pct.toFixed(1).replace(".",",")
+           +'<span class="u">% \u00b7 al llegar a '+nm1(go.obj)+' kg sin perder m\u00fasculo</span>');
   }
   if(ultC && alt > 0){
     var ratio = ultC.d.cintura/alt;
@@ -1473,6 +1556,8 @@ function medLista(){
 
 function medChips(){
   var html = '<button class="chip" data-s="peso" aria-pressed="'+(state.medSel==="peso")+'">Peso</button>', i;
+  if(ultimaGrasa())
+    html += '<button class="chip" data-s="grasa" aria-pressed="'+(state.medSel==="grasa")+'">Grasa</button>';
   for(i=0;i<MEDIDAS.length;i++){
     if(!ultimoCon(MEDIDAS[i].id)) continue;
     html += '<button class="chip" data-s="'+MEDIDAS[i].id+'" aria-pressed="'
@@ -1483,7 +1568,8 @@ function medChips(){
 
 function renderMed(){
   if(!$("m-campos").innerHTML) return;   /* todav\u00eda no se arm\u00f3 el formulario */
-  if(state.medSel !== "peso" && !ultimoCon(state.medSel)) state.medSel = "peso";
+  if(state.medSel === "grasa"){ if(!ultimaGrasa()) state.medSel = "peso"; }
+  else if(state.medSel !== "peso" && !ultimoCon(state.medSel)) state.medSel = "peso";
   medChips(); medChart(); medSpec(); medComp(); medLista();
 }
 
