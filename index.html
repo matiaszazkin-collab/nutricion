@@ -25,6 +25,7 @@
   --teal:#256B7C;
   --olive:#6B7A2E;
   --sheet:#F1EFE8;
+  --hsz:27px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--vellum);color:var(--ink);}
@@ -49,7 +50,7 @@ body{
   margin:0 -14px;padding:0 14px 6px;transition:padding .18s ease}
 .diariofijo .libhead{margin:20px 0 0}
 .diariofijo.stuck{padding-top:8px;box-shadow:0 8px 12px -10px rgba(30,42,44,.55)}
-.diariofijo.stuck .gauge{padding-top:22px;margin-bottom:0}
+.diariofijo.stuck .gauge{padding-top:6px;margin-bottom:0}
 .diariofijo.stuck .ruler{display:none}
 .diariofijo.stuck .readout{margin-top:7px}
 .diariofijo.stuck .readout .big{font-size:24px}
@@ -68,12 +69,10 @@ body{
 
 /* ---- title block ---- */
 .titleblock{display:grid;grid-template-columns:1fr auto;border-bottom:1.5px solid var(--ink);}
-.tb-main{padding:12px 14px 10px;}
-.tb-eyebrow{font-family:"Chivo Mono",monospace;font-size:10px;letter-spacing:.18em;color:var(--ink-soft);text-transform:uppercase;}
-.tb-title{font-size:27px;font-weight:800;font-variation-settings:"wdth" 78;text-transform:uppercase;letter-spacing:.01em;line-height:1;margin-top:4px;}
-.tb-meta{border-left:1.5px solid var(--ink);display:flex;flex-direction:column;justify-content:center;padding:8px 12px;min-width:118px;}
-.tb-meta span{font-family:"Chivo Mono",monospace;font-size:10px;letter-spacing:.08em;color:var(--ink-soft);}
-.tb-meta strong{font-family:"Chivo Mono",monospace;font-size:13px;font-weight:600;}
+.tb-main{padding:8px 13px 7px;display:flex;align-items:center;}
+.tb-title{font-size:var(--hsz,27px);white-space:nowrap;font-weight:800;font-variation-settings:"wdth" 78;text-transform:uppercase;letter-spacing:.01em;line-height:1;}
+.tb-meta{border-left:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;padding:8px 11px;}
+.tb-meta strong{font-family:"Chivo Mono",monospace;white-space:nowrap;font-size:var(--hsz,27px);font-weight:600;line-height:1;letter-spacing:-.035em;}
 
 /* ---- tabs ---- */
 .tabs{display:flex;border-bottom:1.5px solid var(--ink);}
@@ -91,6 +90,8 @@ body{
 .legend{font-family:"Chivo Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;
   color:var(--ink-soft);border-bottom:1px solid var(--rule);padding-bottom:5px;margin-bottom:12px;}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px 12px;}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:10px 10px;margin-top:11px;}
+.grid4 label{font-size:10.5px;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
 .field input,.field select{
@@ -125,17 +126,9 @@ body{
 .hint{font-size:12px;color:var(--ink-soft);margin-top:10px;line-height:1.5}
 
 /* ---- dimension gauge ---- */
-.gauge{margin:6px 0 4px;padding:26px 12px 0;position:relative}
-.dim{position:relative;height:34px}
-.ext{position:absolute;top:-14px;width:1px;height:34px;background:var(--ink)}
-.ext.l{left:0}.ext.r{right:0}
-.dimline{position:absolute;top:0;left:0;right:0;height:1px;background:var(--ink)}
-.arrow{position:absolute;top:-3px;width:0;height:0;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent}
-.arrow.l{left:0;border-right:8px solid var(--ink)}
-.arrow.r{right:0;border-left:8px solid var(--ink)}
-.dimtxt{position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:var(--sheet);padding:0 8px;
-  font-family:"Chivo Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
-.track{position:absolute;top:9px;left:0;right:0;height:17px;border:1px solid var(--rule);background:#fff}
+.gauge{margin:4px 0 4px;padding:4px 12px 0;position:relative}
+.dim{position:relative;height:19px}
+.track{position:absolute;top:0;left:0;right:0;height:19px;border:1px solid var(--ink);background:#fff}
 .fill{position:absolute;top:0;left:0;height:100%;background:var(--teal);width:0;transition:width .28s ease,background .2s ease}
 .fill.done{background:var(--olive)}
 .fill.low{background:var(--red)}
@@ -179,11 +172,7 @@ body{
   font-family:"Chivo Mono",monospace;font-size:9px;color:var(--ink-soft)}
 .col .bar.low{background:var(--red)}
 .metaline{position:absolute;left:0;right:0;border-top:1px dashed var(--olive);pointer-events:none}
-.metaline b{position:absolute;left:0;top:-13px;background:var(--sheet);padding:0 4px;
-  font-family:"Chivo Mono",monospace;font-size:9px;font-weight:400;color:var(--olive);letter-spacing:.08em}
 .minline{position:absolute;left:0;right:0;border-top:1px dashed var(--red);pointer-events:none}
-.minline b{position:absolute;right:0;top:-13px;background:var(--sheet);padding:0 4px;
-  font-family:"Chivo Mono",monospace;font-size:9px;font-weight:400;color:var(--red);letter-spacing:.08em}
 .xaxis div.mes{color:var(--ink);font-weight:600}
 .xaxis{display:flex;gap:4px;margin-top:5px}
 .xaxis div{flex:1;text-align:center;font-family:"Chivo Mono",monospace;font-size:9.5px;color:var(--ink-soft)}
@@ -262,11 +251,15 @@ body{
 .lleg i{display:inline-block;width:17px;height:0;border-top:2px solid var(--teal);vertical-align:middle;margin-right:5px}
 .lleg .plan i{border-top:1.5px dashed var(--ink-soft)}
 .lleg .obj i{border-top:1.5px dashed var(--olive)}
-.medgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px 10px;margin-top:11px}
-.medgrid label{display:flex;flex-direction:column;gap:3px}
-.medgrid label span{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft)}
-.medgrid input{font-family:"Chivo Mono",monospace;font-size:15px;padding:8px 9px;border:1px solid var(--rule);
+.medgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 7px;margin-top:10px}
+.medgrid label{display:flex;flex-direction:column;gap:3px;min-width:0}
+.medgrid label span{font-size:9.5px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-soft);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.medgrid input{font-family:"Chivo Mono",monospace;font-size:14px;padding:7px 4px;text-align:center;border:1px solid var(--rule);
   background:#fff;color:var(--ink);width:100%;border-radius:0;-moz-appearance:textfield}
+.medgrid.dos{grid-template-columns:1fr 1fr;margin-top:0;gap:8px 10px}
+.medgrid.dos input{text-align:left;font-size:15px;padding:8px 9px}
+.medgrid.dos label span{font-size:11px;letter-spacing:.05em}
 .medgrid input::-webkit-outer-spin-button,.medgrid input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .medgrid input:focus{outline:2px solid var(--teal);outline-offset:-1px;border-color:var(--teal)}
 .comohacer{margin-top:13px;border-left:3px solid var(--rule);background:#fff}
@@ -275,7 +268,7 @@ body{
 .comohacer ul{margin:0;padding:0 12px 11px 27px;font-size:13px;line-height:1.5}
 .comohacer li{margin-bottom:6px}
 .comohacer b{font-weight:700}
-.mrow{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:baseline;
+.mrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:baseline;
   padding:8px 0;border-bottom:1px dotted var(--rule);font-size:13.5px;cursor:pointer}
 .mrow .d{font-family:"Chivo Mono",monospace;font-size:12px;color:var(--ink-soft)}
 .mrow .v{font-family:"Chivo Mono",monospace;font-size:14px;font-weight:600;color:var(--teal)}
@@ -324,11 +317,16 @@ body{
 .foot{font-family:"Chivo Mono",monospace;font-size:10.5px;color:var(--ink-soft);text-align:center;margin-top:14px;letter-spacing:.04em;line-height:1.6}
 @media (max-width:520px){
   .grid2{grid-template-columns:1fr}
-  .tb-title{font-size:22px}
+  :root{--hsz:21px}
   .tab{font-size:10.5px;letter-spacing:.04em;padding:11px 2px;font-variation-settings:"wdth" 82}
   .addrow{grid-template-columns:1fr 1fr;}
   .tab{font-size:9.5px;letter-spacing:.02em;padding:11px 1px}
   .addrow button{grid-column:1/-1}
+}
+@media (max-width:390px){
+  :root{--hsz:18px}
+  .medgrid{gap:7px 5px}
+  .medgrid label span{font-size:9px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -340,11 +338,10 @@ body{
   <div class="stickyhead">
   <div class="titleblock">
     <div class="tb-main">
-      <div class="tb-eyebrow">Plan de alimentación</div>
       <h1 class="tb-title">Ficha nutricional</h1>
     </div>
     <div class="tb-meta">
-      <span>FECHA</span><strong id="hoy">—</strong>
+      <strong id="hoy">—</strong>
     </div>
   </div>
 
@@ -360,26 +357,26 @@ body{
   <!-- ============ TAB 1 ============ -->
   <section class="panel" id="p-calc" role="tabpanel" aria-labelledby="tab-calc" hidden>
     <div class="legend">Datos</div>
-    <div class="grid2">
-      <div class="field">
-        <label>Sexo</label>
-        <div class="seg" id="sexo">
-          <button data-v="m" aria-pressed="true">Hombre</button>
-          <button data-v="f" aria-pressed="false">Mujer</button>
-        </div>
+    <div class="field">
+      <label>Sexo</label>
+      <div class="seg" id="sexo">
+        <button data-v="m" aria-pressed="true">Hombre</button>
+        <button data-v="f" aria-pressed="false">Mujer</button>
       </div>
+    </div>
+    <div class="grid4">
       <div class="field"><label for="edad">Edad (años)</label><input id="edad" type="number" inputmode="numeric" min="15" max="90" value="30"></div>
       <div class="field"><label for="altura">Altura (cm)</label><input id="altura" type="number" inputmode="numeric" min="130" max="220" value="175"></div>
       <div class="field"><label for="peso">Peso actual (kg)</label><input id="peso" type="number" inputmode="decimal" step="0.1" min="35" max="250" value="85"></div>
       <div class="field"><label for="objetivo">Peso deseado (kg)</label><input id="objetivo" type="number" inputmode="decimal" step="0.1" min="35" max="250" value="78"></div>
-      <div class="field" style="grid-column:1/-1">
-        <label for="ritmo">Ritmo de cambio</label>
-        <select id="ritmo">
-          <option value="0.25">Suave — 0,25 kg por semana</option>
-          <option value="0.5" selected>Moderado — 0,5 kg por semana</option>
-          <option value="0.75">Rápido — 0,75 kg por semana</option>
-        </select>
-      </div>
+    </div>
+    <div class="field" style="margin-top:11px">
+      <label for="ritmo">Ritmo de cambio</label>
+      <select id="ritmo">
+        <option value="0.25">Suave — 0,25 kg por semana</option>
+        <option value="0.5" selected>Moderado — 0,5 kg por semana</option>
+        <option value="0.75">Rápido — 0,75 kg por semana</option>
+      </select>
     </div>
 
     <div class="legend" style="margin-top:22px">Entrenamiento semanal</div>
@@ -435,10 +432,6 @@ body{
       <div id="aviso-dia"></div>
       <div class="gauge">
         <div class="dim">
-          <div class="ext l"></div><div class="ext r"></div>
-          <div class="dimline"></div>
-          <div class="arrow l"></div><div class="arrow r"></div>
-          <div class="dimtxt" id="dimtxt">meta 0 g</div>
           <div class="track"><div class="fill" id="fill"></div><div class="minmark" id="minmark" hidden></div></div>
         </div>
         <div class="ruler" id="ruler"></div>
@@ -458,8 +451,6 @@ body{
       </div>
       <div id="lista"></div>
       <div id="extra-dia"></div>
-      <p class="hint" style="margin-top:8px">Mantené apretada una fila (o la manija de la izquierda) y arrastrala para cambiar el orden.</p>
-      <button class="linkbtn" id="reset" style="margin-top:6px">Vaciar este día</button>
 
       <div class="legend" style="margin-top:22px">Agregar alimento</div>
       <div class="addrow">
@@ -492,11 +483,12 @@ body{
   <!-- ============ TAB 4 · MEDIDAS ============ -->
   <section class="panel" id="p-med" role="tabpanel" aria-labelledby="tab-med" hidden>
     <div class="legend">Nuevo registro</div>
-    <div class="grid2">
-      <div class="field"><label for="m-fecha">Fecha</label><input id="m-fecha" type="date"></div>
-      <div class="field"><label for="m-peso">Peso (kg)</label><input id="m-peso" type="number" inputmode="decimal" step="0.1" min="25" max="300" placeholder="—"></div>
+    <div class="medgrid dos">
+      <label><span>Fecha</span><input id="m-fecha" type="date"></label>
+      <label><span>Peso (kg)</span><input id="m-peso" type="number" inputmode="decimal" step="0.1" min="25" max="300" placeholder="—"></label>
     </div>
     <div class="medgrid" id="m-campos"></div>
+    <p class="hint" style="margin-top:7px">Las medidas con cinta van en centímetros.</p>
     <div class="btnrow"><button class="btn" id="m-add">Guardar registro</button></div>
     <div id="m-msg"></div>
 
@@ -515,10 +507,10 @@ body{
     <div class="legend" style="margin-top:24px">Composición y forma</div>
     <div id="m-comp"></div>
 
-    <div class="libhead">
-      <div class="legend" style="margin:0;border:none;padding:0">Registros</div>
-      <button class="linkbtn" id="m-borrar">Borrar todo</button>
-    </div>
+    <div class="legend" style="margin-top:24px">Medidas objetivo</div>
+    <div id="m-obj"></div>
+
+    <div class="legend" style="margin-top:24px">Registros</div>
     <div id="m-lista"></div>
     <p class="hint">Tocá un registro para volver a abrirlo en el formulario y corregirlo. El peso del registro más reciente se copia solo al campo <strong>Peso actual</strong> de Cálculo, así las calorías y la proteína del día se recalculan con tu peso de hoy.</p>
   </section>
@@ -533,16 +525,12 @@ body{
 
     <dl class="spec" style="margin-top:22px">
       <div class="spec-row"><dt>Promedio de días cargados</dt><dd id="h-prom">—</dd></div>
+      <div class="spec-row"><dt>Días que llegaron al mínimo</dt><dd id="h-min">—</dd></div>
       <div class="spec-row"><dt>Días que llegaron a la meta</dt><dd id="h-ok">—</dd></div>
-      <div class="spec-row"><dt>Racha actual</dt><dd id="h-racha">—</dd></div>
       <div class="spec-row"><dt>Días registrados</dt><dd id="h-total">—</dd></div>
-      <div class="spec-row"><dt>Proteína acumulada</dt><dd id="h-acum">—</dd></div>
     </dl>
 
-    <div class="libhead">
-      <div class="legend" style="margin:0;border:none;padding:0">Detalle</div>
-      <button class="linkbtn" id="h-borrar">Borrar historial</button>
-    </div>
+    <div class="legend" style="margin-top:22px">Detalle</div>
     <div id="h-lista"></div>
 
     <div class="legend" style="margin-top:26px">Respaldo</div>
@@ -553,7 +541,6 @@ body{
     <input type="file" id="b-file" accept="application/json,.json" hidden>
     <div id="b-msg"></div>
     <p class="hint">El respaldo se baja como un archivo a la carpeta Descargas. Guardalo donde quieras: contiene tus datos, la biblioteca y todos los días cargados. Restaurarlo reemplaza lo que tengas ahora.</p>
-    <p class="foot">Versión 7 · medidas, peso y mínimo en el historial</p>
   </section>
 </div>
 </div>
@@ -828,7 +815,6 @@ function renderDiario(){
 
   var t = totales(), pct = Math.min(100,(t.prot/meta)*100), listo = t.prot>=meta;
   var min = state.meta.min||0, bajo = min>0 && t.prot < min;
-  $("dimtxt").textContent = min>0 && min<meta ? "mín "+min+" g · meta "+meta+" g" : "meta "+meta+" g";
   $("fill").style.width = pct+"%";
   $("fill").className = "fill"+(listo?" done":(bajo?" low":""));
   var mk = $("minmark");
@@ -1154,9 +1140,9 @@ function renderHist(){
     }
     eje += '<div class="'+(hoy?"hoy":(dd==="01"?"mes":""))+'">'+(dd==="01"?dd+"/"+mm:dd)+'</div>';
   }
-  var linea = metaHoy>0 ? '<div class="metaline" style="bottom:'+((metaHoy/tope)*100)+'%"><b>META '+metaHoy+' G</b></div>' : "";
+  var linea = metaHoy>0 ? '<div class="metaline" style="bottom:'+((metaHoy/tope)*100)+'%"></div>' : "";
   if(minHoy>0 && minHoy<metaHoy)
-    linea += '<div class="minline" style="bottom:'+((minHoy/tope)*100)+'%"><b>M\u00cdN '+minHoy+' G</b></div>';
+    linea += '<div class="minline" style="bottom:'+((minHoy/tope)*100)+'%"></div>';
   $("chart").innerHTML = bars + linea;
   $("xaxis").innerHTML = eje;
 
@@ -1166,20 +1152,16 @@ function renderHist(){
   wrap.scrollLeft = inner.scrollWidth;
 
   /* estadísticas sobre todo lo registrado */
-  var suma=0, ok=0, n=claves.length;
-  for(i=0;i<n;i++){ var e=H[claves[i]]; suma+=e.p; if(e.m && e.p>=e.m) ok++; }
+  var suma=0, ok=0, n=claves.length, okMin=0, conMin=0;
+  for(i=0;i<n;i++){
+    var e=H[claves[i]]; suma+=e.p;
+    if(e.m && e.p>=e.m) ok++;
+    if(e.mn>0){ conMin++; if(e.p>=e.mn) okMin++; }
+  }
   $("h-prom").innerHTML = n ? Math.round(suma/n)+'<span class="u">g/día</span>' : "—";
+  $("h-min").innerHTML = conMin ? okMin+" de "+conMin : "—";
   $("h-ok").innerHTML = n ? ok+" de "+n : "—";
   $("h-total").innerHTML = n ? n+'<span class="u">días</span>' : "—";
-  $("h-acum").innerHTML = n ? fmt(Math.round(suma))+'<span class="u">g</span>' : "—";
-
-  var racha=0, off=0;
-  if(!H[diaISO(0)]) off=-1;   // el día de hoy todavía puede completarse
-  while(true){
-    var e2=H[diaISO(off)];
-    if(e2 && e2.m && e2.p>=e2.m){ racha++; off--; } else break;
-  }
-  $("h-racha").innerHTML = racha ? racha+'<span class="u">'+(racha===1?"día":"días")+" al hilo"+'</span>' : "—";
 
   var lista="";
   for(i=claves.length-1;i>=0;i--){
@@ -1551,6 +1533,77 @@ function medComp(){
   $("m-comp").innerHTML = html;
 }
 
+/* ---- medidas objetivo ----
+   La cintura objetivo es la que da el porcentaje de grasa objetivo en la f\u00f3rmula
+   de la Marina, dejando el cuello igual. El resto de los contornos se mueve una
+   fracci\u00f3n de lo que se mueve la cintura: la panza es lo primero que baja, el
+   brazo y la pantorrilla lo \u00faltimo. Son estimaciones, no promesas. */
+var OBJK = {pecho:0.55, cintura:1, cadera:0.5, brazo:0.20, muslo:0.35, pantorrilla:0.12};
+
+function medidasObjetivo(){
+  var go = grasaObjetivo(), h = +state.altura;
+  if(!go || go.pct == null || !(h > 0)) return null;
+  var regs = medOrden(), reg = null, i;
+  for(i=regs.length-1;i>=0;i--) if(grasaEn(regs[i])){ reg = regs[i]; break; }
+  if(!reg) return null;
+
+  var d = reg.d, c = d.cuello, bf = go.pct, S, x;
+  if(state.sexo === "m"){
+    S = Math.pow(10, (1.0324 + 0.15456*log10(h) - 495/(bf+450))/0.19077);
+    x = (d.cintura - c) - S;
+  } else {
+    if(!(d.cadera > 0)) return null;
+    S = Math.pow(10, (1.29579 + 0.22100*log10(h) - 495/(bf+450))/0.35004);
+    x = ((d.cintura + d.cadera - c) - S)/1.5;
+  }
+  if(!isFinite(x)) return null;
+
+  var objs = [];
+  for(i=0;i<MEDIDAS.length;i++){
+    var id = MEDIDAS[i].id, k = OBJK[id];
+    if(k == null) continue;
+    var u = ultimoCon(id);
+    if(!u) continue;
+    var meta = u.d[id] - k*x;
+    if(!(meta > 0)) continue;
+    objs.push({nm:MEDIDAS[i].nm, hoy:u.d[id], meta:meta});
+  }
+  return {x:x, bf:bf, obj:go.obj, cuello:c, objs:objs};
+}
+
+function medObj(){
+  var mo = medidasObjetivo(), html = "", i;
+  if(!mo){
+    var go = grasaObjetivo();
+    if(go && go.pct == null)
+      html = '<div class="empty">Tu peso objetivo (<strong>'+nm1(go.obj)+' kg</strong>) queda por debajo de la masa magra '
+           + 'que ten\u00e9s medida ('+nm1(go.lm)+' kg), as\u00ed que no se pueden calcular medidas objetivo sin perder m\u00fasculo.</div>';
+    else
+      html = '<div class="empty">Carg\u00e1 <strong>cuello</strong> y <strong>cintura</strong> (y tu peso) y ac\u00e1 aparecen las medidas '
+           + 'que te corresponder\u00edan al llegar a los <strong>'+nm1(+state.objetivo)+' kg</strong> de la pesta\u00f1a C\u00e1lculo.</div>';
+    $("m-obj").innerHTML = html;
+    return;
+  }
+
+  html = '<dl class="spec" style="margin-top:0">'
+       + '<div class="spec-row"><dt>Peso objetivo</dt><dd>'+nm1(mo.obj)+'<span class="u">kg</span></dd></div>'
+       + '<div class="spec-row"><dt>Grasa al llegar</dt><dd>'+mo.bf.toFixed(1).replace(".",",")+'<span class="u">%</span></dd></div>';
+  for(i=0;i<mo.objs.length;i++){
+    var o = mo.objs[i], dif = o.meta - o.hoy;
+    html += '<div class="spec-row"><dt>'+o.nm+'</dt><dd>'+nm1(o.meta)+'<span class="u">cm \u00b7 '
+         +  '<span class="dlt '+(Math.abs(dif)<0.1?"":(dif<0?"bien":"mal"))+'">'
+         +  (dif>0.05?"+":(dif<-0.05?"\u2212":"\u00b1"))+nm1(Math.abs(dif))+'</span></span></dd></div>';
+  }
+  html += '<div class="spec-row"><dt>Cuello</dt><dd>'+nm1(mo.cuello)+'<span class="u">cm \u00b7 igual</span></dd></div>';
+  html += '</dl>';
+  html += '<p class="hint">La cintura objetivo sale de la f\u00f3rmula de grasa corporal: es la que te da '
+       +  mo.bf.toFixed(1).replace(".",",")+'% de grasa a los '+nm1(mo.obj)+' kg, con el cuello igual que hoy. '
+       +  'Los dem\u00e1s contornos se estiman como una fracci\u00f3n de lo que baja la cintura '
+       +  '(pecho y cadera acompa\u00f1an bastante; brazo, muslo y pantorrilla mucho menos, porque ah\u00ed hay m\u00e1s m\u00fasculo que grasa). '
+       +  'Son una referencia para saber si vas bien encaminado, no un n\u00famero exacto.</p>';
+  $("m-obj").innerHTML = html;
+}
+
 /* ---- lista de registros ---- */
 function medLista(){
   var regs = medOrden(), html = "", i, j;
@@ -1561,7 +1614,6 @@ function medLista(){
     html += '<div class="mrow" data-f="'+f+'">'
       + '<span class="d">'+fechaLarga(f)+'</span>'
       + '<span class="v">'+(d.peso > 0 ? nm1(d.peso)+' kg' : '\u2014')+'</span>'
-      + '<button class="x" data-act="del" data-f="'+f+'" aria-label="Borrar el registro del '+fechaLarga(f)+'">borrar</button>'
       + (det.length ? '<span class="sub">'+esc(det.join(" \u00b7 "))+' cm</span>' : '')
       + '</div>';
   }
@@ -1584,7 +1636,7 @@ function renderMed(){
   if(!$("m-campos").innerHTML) return;   /* todav\u00eda no se arm\u00f3 el formulario */
   if(state.medSel === "grasa"){ if(!ultimaGrasa()) state.medSel = "peso"; }
   else if(state.medSel !== "peso" && !ultimoCon(state.medSel)) state.medSel = "peso";
-  medChips(); medChart(); medSpec(); medComp(); medLista();
+  medChips(); medChart(); medSpec(); medComp(); medObj(); medLista();
 }
 
 /* ---- formulario ---- */
@@ -1629,8 +1681,8 @@ function medGuardar(){
 function medInit(){
   var i, campos = "", como = "";
   for(i=0;i<MEDIDAS.length;i++){
-    campos += '<label><span>'+MEDIDAS[i].nm+' (cm)</span>'
-           +  '<input id="m-'+MEDIDAS[i].id+'" type="number" inputmode="decimal" step="0.1" min="10" max="250" placeholder="\u2014"></label>';
+    campos += '<label><span>'+MEDIDAS[i].nm+'</span>'
+           +  '<input id="m-'+MEDIDAS[i].id+'" type="number" inputmode="decimal" step="0.1" min="10" max="250" placeholder="cm"></label>';
     como += '<li><b>'+MEDIDAS[i].nm+'.</b> '+MEDIDAS[i].como+'</li>';
   }
   como += '<li><b>Siempre igual.</b> A la ma\u00f1ana, en ayunas y despu\u00e9s de ir al ba\u00f1o, '
@@ -1649,23 +1701,9 @@ function medInit(){
     renderMed();
   });
   $("m-lista").addEventListener("click", function(ev){
-    var b = ev.target.closest("button");
-    if(b && b.dataset.act === "del"){
-      if(!confirm("\u00bfBorrar el registro del "+fechaLarga(b.dataset.f)+"?")) return;
-      delete state.med[b.dataset.f];
-      medPintarForm("");
-      render(); save();
-      return;
-    }
     var row = ev.target.closest(".mrow"); if(!row) return;
     medPintarForm(row.dataset.f);
     $("m-peso").focus();
-  });
-  $("m-borrar").addEventListener("click", function(){
-    if(!confirm("\u00bfBorrar todos los registros de peso y medidas? No se puede deshacer.")) return;
-    state.med = {};
-    medPintarForm("");
-    render(); save();
   });
 }
 
@@ -1886,13 +1924,6 @@ $("dia").addEventListener("change", function(){
   this.value = state.dia;
   renderDiario(); save();
 });
-$("reset").addEventListener("click", function(){
-  var log = state.logs[state.dia];
-  if(log) for(var id in log) ajustarStock(id, log[id]);   /* lo cargado vuelve al stock */
-  delete state.logs[state.dia];
-  delete state.extra[state.dia];
-  renderDiario(); renderHist(); save();
-});
 $("n-add").addEventListener("click", function(){
   var nm=$("n-nom").value.trim(), por=$("n-por").value.trim()||"1 porción",
       pr=parseFloat($("n-prot").value), kc=parseFloat($("n-kcal").value);
@@ -1902,11 +1933,6 @@ $("n-add").addEventListener("click", function(){
   $("n-nom").value=""; $("n-por").value=""; $("n-prot").value=""; $("n-kcal").value="";
   state.editando = null; state.borrando = null;
   renderDiario(); save();
-});
-$("h-borrar").addEventListener("click", function(){
-  if(!confirm("¿Borrar todos los días guardados? No se puede deshacer.")) return;
-  state.logs = {}; state.metas = {}; state.mins = {}; state.legacy = {}; state.extra = {};
-  renderDiario(); renderHist(); save();
 });
 /* orden de las pestañas, de izquierda a derecha */
 var ORDEN=["diario","hist","stock","med","calc"],
