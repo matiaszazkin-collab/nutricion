@@ -1159,8 +1159,8 @@ function renderHist(){
     if(e.mn>0){ conMin++; if(e.p>=e.mn) okMin++; }
   }
   $("h-prom").innerHTML = n ? Math.round(suma/n)+'<span class="u">g/día</span>' : "—";
-  $("h-min").innerHTML = conMin ? okMin+" de "+conMin : "—";
-  $("h-ok").innerHTML = n ? ok+" de "+n : "—";
+  $("h-min").innerHTML = conMin ? okMin+" de "+conMin+'<span class="u">'+Math.round(okMin/conMin*100)+'%</span>' : "—";
+  $("h-ok").innerHTML = n ? ok+" de "+n+'<span class="u">'+Math.round(ok/n*100)+'%</span>' : "—";
   $("h-total").innerHTML = n ? n+'<span class="u">días</span>' : "—";
 
   var lista="";
