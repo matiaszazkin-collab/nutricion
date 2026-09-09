@@ -160,11 +160,23 @@ body{
 .act-row input:focus{outline:2px solid var(--teal);outline-offset:-1px}
 
 /* ---- historial ---- */
-.chartwrap{overflow-x:auto;overflow-y:hidden;margin-top:18px;padding-bottom:2px;-webkit-overflow-scrolling:touch}
-.chartinner{position:relative}
+.chartwrap{overflow-x:auto;overflow-y:hidden;margin-top:14px;padding-bottom:2px;
+  -webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior-x:contain;
+  cursor:grab;scrollbar-width:thin}
+.chartwrap.grabbing{cursor:grabbing}
+.chartwrap.grabbing *{pointer-events:none}
+.chartinner{position:relative;will-change:width}
+.chart-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-top:18px}
+.chart-head .legend{flex:1;margin-bottom:0}
+.zoomctl{display:flex;gap:4px;padding-bottom:5px}
+.zbtn{width:28px;height:24px;line-height:1;padding:0;background:#fff;border:1px solid var(--rule);
+  color:var(--ink);cursor:pointer;font-family:"Chivo Mono",monospace;font-size:13px}
+.zbtn:disabled{opacity:.35;cursor:default}
+.zbtn:active:not(:disabled){background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.zbtn:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
 .chart{position:relative;height:168px;display:flex;align-items:flex-end;gap:4px;
   border-bottom:1.5px solid var(--ink);padding-bottom:0}
-.col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
+.col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
 .col .bar{width:100%;background:var(--teal);min-height:2px;transition:height .3s ease}
 .col .bar.done{background:var(--olive)}
 .col .bar.none{background:repeating-linear-gradient(45deg,#E8E6DE 0 3px,#fff 3px 6px);border:1px solid var(--grid)}
@@ -175,7 +187,7 @@ body{
 .minline{position:absolute;left:0;right:0;border-top:1px dashed var(--red);pointer-events:none}
 .xaxis div.mes{color:var(--ink);font-weight:600}
 .xaxis{display:flex;gap:4px;margin-top:5px}
-.xaxis div{flex:1;text-align:center;font-family:"Chivo Mono",monospace;font-size:9.5px;color:var(--ink-soft)}
+.xaxis div{flex:1;min-width:0;overflow:hidden;text-align:center;font-family:"Chivo Mono",monospace;font-size:9.5px;color:var(--ink-soft)}
 .xaxis div.hoy{color:var(--ink);font-weight:600}
 .hrow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
   padding:8px 0;border-bottom:1px dotted var(--rule);font-size:13.5px}
@@ -517,8 +529,15 @@ body{
 
   <!-- ============ TAB 5 ============ -->
   <section class="panel" id="p-hist" role="tabpanel" aria-labelledby="tab-hist" hidden>
-    <div class="legend">Proteína por día</div>
-    <div class="chartwrap"><div class="chartinner" id="chartinner">
+    <div class="chart-head">
+      <div class="legend">Proteína por día</div>
+      <div class="zoomctl">
+        <button type="button" class="zbtn" id="z-out" aria-label="Alejar">&minus;</button>
+        <button type="button" class="zbtn" id="z-fit" aria-label="Ver todo">&#8646;</button>
+        <button type="button" class="zbtn" id="z-in" aria-label="Acercar">+</button>
+      </div>
+    </div>
+    <div class="chartwrap" id="chartwrap"><div class="chartinner" id="chartinner">
       <div class="chart" id="chart"></div>
       <div class="xaxis" id="xaxis"></div>
     </div></div>
@@ -1107,6 +1126,50 @@ function entradas(){
   return out;
 }
 
+/* ---- zoom y paneo del gráfico ----
+   histZoom es un multiplicador sobre el ancho base de columna (19 px/día).
+   histLayout sólo reacomoda anchos y etiquetas: no vuelve a dibujar barras. */
+var HZ_BASE = 19, HZ_MIN = 0.2, HZ_MAX = 9;
+var histZoom = 1, histDias = [], histVisto = false;
+
+function histLayout(modo, anclaX){
+  var wrap = $("chartwrap"), inner = $("chartinner"),
+      chart = $("chart"), eje = $("xaxis"), n = histDias.length, i;
+  if(!wrap || !n) return;
+
+  var libre = wrap.clientWidth || 320,
+      previo = inner.offsetWidth || libre,
+      ancla = (anclaX == null) ? libre/2 : anclaX,
+      frac = previo > 0 ? (wrap.scrollLeft + ancla)/previo : 1;
+
+  var ancho = HZ_BASE * histZoom, total = n * ancho;
+  var gap = ancho < 9 ? 0 : (ancho < 14 ? 1 : (ancho < 22 ? 2 : 4));
+  chart.style.gap = gap + "px";
+  eje.style.gap = gap + "px";
+  inner.style.width = total > libre ? Math.round(total) + "px" : "100%";
+
+  /* etiquetas: sólo las que entran sin pisarse, contadas desde hoy hacia atrás */
+  var real = (inner.offsetWidth || libre)/n, paso = Math.max(1, Math.ceil(20/real)), txt = "";
+  for(i=0;i<n;i++){
+    var k = histDias[i].k, hoy = i === n-1, dd = k.slice(8), mm = k.slice(5,7),
+        ver = hoy || ((n-1-i) % paso === 0);
+    txt += '<div class="'+(hoy?"hoy":(dd==="01"?"mes":""))+'">'
+         + (ver ? (dd==="01" ? dd+"/"+mm : dd) : "&nbsp;") + '</div>';
+  }
+  eje.innerHTML = txt;
+
+  var nuevo = inner.offsetWidth || libre;
+  wrap.scrollLeft = modo === "fin" ? nuevo : (frac*nuevo - ancla);
+
+  $("z-in").disabled  = histZoom >= HZ_MAX - 0.001;
+  $("z-out").disabled = histZoom <= HZ_MIN + 0.001;
+}
+
+function histZoomA(z, anclaX){
+  histZoom = Math.min(HZ_MAX, Math.max(HZ_MIN, z));
+  histLayout("keep", anclaX);
+}
+
 function renderHist(){
   var H = entradas(), claves = Object.keys(H).sort(), dias=[], i;
 
@@ -1124,9 +1187,9 @@ function renderHist(){
   for(i=0;i<dias.length;i++) if(dias[i].e){ tope=Math.max(tope, dias[i].e.p, dias[i].e.m||0); }
   tope = Math.max(tope*1.12, 10);
 
-  var bars="", eje="";
+  var bars="";
   for(i=0;i<dias.length;i++){
-    var d=dias[i], hoy = i===dias.length-1, dd=d.k.slice(8), mm=d.k.slice(5,7);
+    var d=dias[i], hoy = i===dias.length-1;
     if(d.e){
       var alto=Math.max((d.e.p/tope)*100,1.5), ok=d.e.m && d.e.p>=d.e.m;
       var bajo = d.e.mn>0 && d.e.p < d.e.mn;
@@ -1138,18 +1201,15 @@ function renderHist(){
     } else {
       bars += '<div class="col" title="'+lindaFecha(d.k)+': sin registro"><div class="bar none" style="height:2%"></div></div>';
     }
-    eje += '<div class="'+(hoy?"hoy":(dd==="01"?"mes":""))+'">'+(dd==="01"?dd+"/"+mm:dd)+'</div>';
   }
   var linea = metaHoy>0 ? '<div class="metaline" style="bottom:'+((metaHoy/tope)*100)+'%"></div>' : "";
   if(minHoy>0 && minHoy<metaHoy)
     linea += '<div class="minline" style="bottom:'+((minHoy/tope)*100)+'%"></div>';
   $("chart").innerHTML = bars + linea;
-  $("xaxis").innerHTML = eje;
 
-  /* ancho mínimo por barra: si hay muchos días, el gráfico se desplaza */
-  var inner = $("chartinner"), wrap = inner.parentNode;
-  inner.style.width = dias.length > 16 ? (dias.length*19) + "px" : "100%";
-  wrap.scrollLeft = inner.scrollWidth;
+  histDias = dias;
+  histLayout(histVisto ? "keep" : "fin");
+  if($("chartwrap") && $("chartwrap").clientWidth > 0) histVisto = true;
 
   /* estadísticas sobre todo lo registrado */
   var suma=0, ok=0, n=claves.length, okMin=0, conMin=0;
@@ -1934,6 +1994,63 @@ $("n-add").addEventListener("click", function(){
   state.editando = null; state.borrando = null;
   renderDiario(); save();
 });
+/* ---- controles del gráfico de historial: botones, pinza, rueda y arrastre ---- */
+(function(){
+  var wrap = $("chartwrap");
+  if(!wrap) return;
+  var izq = function(){ return wrap.getBoundingClientRect().left; };
+  var dist = function(t){
+    var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY;
+    return Math.sqrt(dx*dx + dy*dy) || 1;
+  };
+
+  $("z-in").addEventListener("click",  function(){ histZoomA(histZoom*1.6); });
+  $("z-out").addEventListener("click", function(){ histZoomA(histZoom/1.6); });
+  $("z-fit").addEventListener("click", function(){   /* todo el historial en pantalla */
+    var n = histDias.length || 1;
+    histZoomA(((wrap.clientWidth || 320)/n)/HZ_BASE);
+  });
+
+  /* pinza de dos dedos */
+  var d0 = 0, z0 = 1;
+  wrap.addEventListener("touchstart", function(e){
+    if(e.touches.length === 2){ d0 = dist(e.touches); z0 = histZoom; }
+  }, {passive:true});
+  wrap.addEventListener("touchmove", function(e){
+    if(e.touches.length === 2 && d0){
+      e.preventDefault();
+      var medio = (e.touches[0].clientX + e.touches[1].clientX)/2 - izq();
+      histZoomA(z0 * dist(e.touches)/d0, medio);
+    }
+  }, {passive:false});
+  wrap.addEventListener("touchend", function(e){ if(e.touches.length < 2) d0 = 0; });
+
+  /* ctrl/⌘ + rueda, o pinza de trackpad */
+  wrap.addEventListener("wheel", function(e){
+    if(!(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    histZoomA(histZoom * (e.deltaY < 0 ? 1.14 : 1/1.14), e.clientX - izq());
+  }, {passive:false});
+
+  /* arrastrar con el mouse para correr el gráfico */
+  var arr = null;
+  wrap.addEventListener("mousedown", function(e){
+    if(e.button === 0) arr = {x:e.clientX, s:wrap.scrollLeft, mov:false};
+  });
+  window.addEventListener("mousemove", function(e){
+    if(!arr) return;
+    var dx = e.clientX - arr.x;
+    if(!arr.mov && Math.abs(dx) > 3){ arr.mov = true; wrap.classList.add("grabbing"); }
+    if(arr.mov){ e.preventDefault(); wrap.scrollLeft = arr.s - dx; }
+  });
+  window.addEventListener("mouseup", function(){
+    if(arr && arr.mov) wrap.classList.remove("grabbing");
+    arr = null;
+  });
+
+  window.addEventListener("resize", function(){ if(histDias.length) histLayout("keep"); });
+})();
+
 /* orden de las pestañas, de izquierda a derecha */
 var ORDEN=["diario","hist","stock","med","calc"],
     RENDER={hist:renderHist, stock:renderStock, med:renderMed},
